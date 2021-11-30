@@ -33,3 +33,14 @@ class BuckleWeb:
         shear_stress_y = Vy / (self.hf * self.tf + self.hr * self.tr)
 
         return shear_stress_x, shear_stress_y
+class BuckleSkin:
+    def init(self, kc ,E, t, stringer_count, stringer_width, p_ratio):
+        self.kc = kc
+        self.E = E
+        self.t = t
+        self.stringer_count = stringer_count
+        self.stringer_width = stringer_width
+        self.p_ratio = p_ratio
+
+    def crit_buckle_skin(self)
+        return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.t))**2
