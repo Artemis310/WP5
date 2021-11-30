@@ -9,7 +9,8 @@ from WP_4 import Shear_Calculations as Sc
 
 
 class BuckleWeb:
-    def __init__(self, E, p_ratio, t, web_width, web_height, spar_height_front, spar_t_front, spar_height_rear, spar_t_rear):
+    def __init__(self, E, p_ratio, t, web_width, web_height, spar_height_front, spar_t_front, spar_height_rear,
+                 spar_t_rear):
         self.E = E
         self.p_ratio = p_ratio
         self.t = t
@@ -22,7 +23,7 @@ class BuckleWeb:
         self.span = Al.AeroLoads(0.333, 247.66, 4.42, 0.01).total_dist()[0]
 
     def cri_buckle_web(self, ks):
-        return (np.pi ** 2 * ks * self.E) / (12 * (1 - self.p_ratio  **2)) * (self.t / self.b) ** 2
+        return (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio**2)) * (self.t / self.b) ** 2
 
     def shear_ave(self):
         z = self.span
@@ -43,3 +44,6 @@ class BuckleSkin:
 
     def crit_buckle_skin(self):
         return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.t))**2
+
+
+#this is a test change
