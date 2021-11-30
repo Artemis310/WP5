@@ -23,7 +23,7 @@ class BuckleWeb:
         self.span = Al.AeroLoads(0.333, 247.66, 4.42, 0.01).total_dist()[0]
 
     def cri_buckle_web(self, ks):
-        return (np.pi  2 * ks * self.E) / (12 * (1 - self.p_ratio  2)) * (self.t / self.b) ** 2
+        return (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio**2)) * (self.t / self.b) ** 2
 
     def shear_ave(self):
         z = self.span
@@ -34,7 +34,7 @@ class BuckleWeb:
 
         return shear_stress_x, shear_stress_y
 class BuckleSkin:
-    def init(self, kc ,E, t, stringer_count, stringer_width, p_ratio):
+    def __init__(self, kc ,E, t, stringer_count, stringer_width, p_ratio):
         self.kc = kc
         self.E = E
         self.t = t
@@ -42,5 +42,5 @@ class BuckleSkin:
         self.stringer_width = stringer_width
         self.p_ratio = p_ratio
 
-    def crit_buckle_skin(self)
+    def crit_buckle_skin(self):
         return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.t))**2
