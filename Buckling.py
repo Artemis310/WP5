@@ -44,6 +44,10 @@ class BuckleSkin:
 
     def crit_buckle_skin(self):
         return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.t))**2
+    
+    def stress_at_span(self, y):
+        
+        return 3
 
 
 #this is a test change
