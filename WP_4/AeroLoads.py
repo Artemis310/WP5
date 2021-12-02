@@ -125,7 +125,7 @@ class AeroLoads:
 
 
 # (Density [kg/m3], Free Stream Velocity [m/s], Angle of Attack [degrees], dy]
-print(AeroLoads(0.333, 247.6, 4.42, 0.01).plotting())  # Uncomment for Plotting Total Distribution
+# print(AeroLoads(0.333, 247.6, 4.42, 0.01).plotting())  # Uncomment for Plotting Total Distribution
 # desired_dist([Input Span Location])
 # print(AeroLoads(1.225, 10, 4.42, 0.01).desired_dist(10))  # Uncomment for Desired Value
 # print(AeroLoads(0.333, 247.6, 4.42, 0.01).find_total()[0])  # Uncomment for Functions and Total Values
