@@ -86,3 +86,5 @@ class BuckleColumn:
 
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
+
+print(BuckleWeb(0, 1, 1, 1, 1, 1, 1, 1, 1).plotting_shear())
