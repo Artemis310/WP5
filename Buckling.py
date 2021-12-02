@@ -42,7 +42,7 @@ class BuckleWeb:
 
         return shear_stress_x, shear_stress_y
 class BuckleSkin:
-    def __init__(self, span_location, kc ,E, t, stringer_count, stringer_width, p_ratio, plate_width,b):
+    def __init__(self, span_location, kc ,E, t, stringer_count, stringer_width, p_ratio, plate_width):
         self.span_location = span_location
         self.kc = kc
         self.E = E
@@ -50,7 +50,8 @@ class BuckleSkin:
         self.stringer_count = stringer_count
         self.stringer_width = stringer_width
         self.p_ratio = p_ratio
-        self.b = b
+        self.plate_width = plate_width
+        self.b = plate_width/self.stringer_count - stringer_width
 
     def crit_buckle_skin(self):
         return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.t))**2
