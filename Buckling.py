@@ -15,7 +15,7 @@ def stress_at_span(plane, span_location, cross_section_y):
     if plane.lower == "L":
         return (Md.moment_yz_vec(span_location)*cross_section_y) / Mi.moment_inertia_xx_func
     else:
-        (Md.moment_zx_vec(span_location)*cross_section_y) / Mi.moment_inertia_xx_func
+        (Md.moment_zx_vec(span_location))*cross_section_y / Mi.moment_inertia_xx_func
 
 
 def cross_section_area(y):
@@ -87,3 +87,8 @@ class BuckleColumn:
 
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
+
+
+#print(stress_at_span("l", np.linspace(0, 51.73/2, 1000), 0.5))
+
+print(type(Md.moment_yz_vec(np.linspace(0,51.73/2, 1000))))
