@@ -36,7 +36,7 @@ class BuckleWeb:
     def shear_ave(self):
         z = self.span
         V = Sc.TotalShearDistxz(z)
-        shear_stres = Vx/ (self.hf * self.tf + self.hr * self.tr)
+        shear_stres = V / (self.hf * self.tf + self.hr * self.tr)
 
         return shear_stres
 
