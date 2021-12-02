@@ -11,15 +11,35 @@ import moment_diagram as Md
 
 
 
-def stress_at_span(plane, span_location, cross_section_y):
-    if plane.lower == "L":
-        return (Md.moment_yz_vec(span_location)*cross_section_y) / Mi.moment_inertia_xx_func
+def stress_at_span(plane, cross_section_y, data_count):
+    span_location = np.linspace(0, 51.73/2, data_count)
+    
+    if plane.lower == "Lift":
+        return np.array(span_location,(Md.moment_yz_vec(span_location)*cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
     else:
-        (Md.moment_zx_vec(span_location))*cross_section_y / Mi.moment_inertia_xx_func
+        return np.array(span_location, (Md.moment_zx_vec(span_location)*cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
 
 
 def cross_section_area(y):
     return ((Mi.z1+Mi.z4)*Mi.x3)/2
+
+class StressCalcs:
+    def __init__(self, plane, cross_section_y, data_count):
+        self.plane = plane
+        self.cross_section_y = cross_section_y
+        self.data_count =  data_count
+    
+    def stress_along_span(self):
+        span_location = np.linspace(0, 51.73/2, self.data_count)
+    
+        if self.plane.lower == "Lift":
+            return np.column_stack(span_location,(Md.moment_yz_vec(span_location)*self.cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
+        else:
+            return np.column_stack(span_location, (Md.moment_zx_vec(span_location)*self.cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
+
+    def find_stress_at_span(self):
+        return None
+
 
 class BuckleWeb:
     def __init__(self, E, p_ratio, t, web_width, web_height, spar_height_front, spar_t_front, spar_height_rear,
@@ -89,6 +109,7 @@ class BuckleColumn:
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
 
 
-#print(stress_at_span("l", np.linspace(0, 51.73/2, 1000), 0.5))
+#print(stress_at_span("lift", 0.5, 1000))
 
-print(type(Md.moment_yz_vec(np.linspace(0,51.73/2, 1000))))
+
+print(StressCalcs("lift", 0.5, 1000).stress_along_span())
