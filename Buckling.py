@@ -7,7 +7,7 @@ from scipy import interpolate
 from WP_4 import AeroLoads as Al
 from WP_4 import Shear_Calculations as Sc
 from WP_4 import moment_inerta as Mi
-
+print(np.pi)
 
 def stress_at_span(span_pos, cross_section_y):
     return None
@@ -36,7 +36,7 @@ class BuckleWeb:
     def shear_ave(self):
         z = self.span
         V = Sc.TotalShearDistxz(z)
-        shear_stres = Vx/ (self.hf * self.tf + self.hr * self.tr)
+        shear_stres = V / (self.hf * self.tf + self.hr * self.tr)
 
         return shear_stres
 

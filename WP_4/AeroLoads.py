@@ -5,7 +5,6 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
 sns.set()
 class AeroLoads:
     def __init__(self, rho, V_inf, alpha, dy):
