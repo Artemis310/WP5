@@ -7,10 +7,14 @@ from scipy import interpolate
 from WP_4 import AeroLoads as Al
 from WP_4 import Shear_Calculations as Sc
 from WP_4 import moment_inerta as Mi
-print(np.pi)
+
+
 
 def stress_at_span(span_pos, cross_section_y):
     return None
+
+def plate_width_top():
+    return
     
 
 def cross_section_area(y):
@@ -75,3 +79,10 @@ class BuckleSkin:
 class BuckleColumn:
     def __init__(self, K, E, I, L, A):
         self.K = K
+        self.E = E
+        self.I = I
+        self.L = L
+        self.A = A
+
+    def crit_buckle_stringer(self):
+        return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
