@@ -93,10 +93,10 @@ def ShearFuncAfterEngineyz(z):
 '''Shear Distribution in xz plane'''
 # Plotting Shear Diagram
 shear_xz = ShearDist(lambda z: -Drag(z), root_react_x, engine_thrust, 10000)
-plt.plot(shear_xz[:, 0], shear_xz[:, 1])
-plt.ylabel("shear xz")
-plt.xlabel("span_test")
-plt.show()
+# plt.plot(shear_xz[:, 0], shear_xz[:, 1])
+# plt.ylabel("shear xz")
+# plt.xlabel("span_test")
+# plt.show()
 
 # Determining Shear Diagram Equation
 engine_data_point_xz = np.where(shear_xz[:, 0] <= 9.05)[0][-1]
@@ -112,3 +112,9 @@ def ShearFuncAfterEnginexz(z):
     return (shear_xz_fit_after_engine[0] * z ** 5) + (shear_xz_fit_after_engine[1] * z ** 4) + \
            (shear_xz_fit_after_engine[2] * z ** 3) + (shear_xz_fit_after_engine[3] * z ** 2) + \
            (shear_xz_fit_after_engine[4] * z) + (shear_xz_fit_after_engine[5])
+
+def TotalShearxz(z):
+    return ShearFuncBeforeEnginexz(z) + ShearFuncAfterEnginexz(z)
+
+def TotalShearyz(z):
+    return ShearFuncBeforeEngineyz(z) + ShearFuncAfterEngineyz(z)
