@@ -22,9 +22,9 @@ def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
 
 class BuckleWeb:
-    def __init__(self, E, p_ratio,):
-        self.E = E
-        self.p_ratio = p_ratio
+    def __init__(self):
+        self.E = 69e3
+        self.p_ratio = 0.33
         self.span = np.linspace(0, 51.73 / 2, num=100)
         self.c_spar1 = Mi.c_spar1
         self.c_spar2 = Mi.c_spar2
@@ -35,7 +35,7 @@ class BuckleWeb:
         tcr_f = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (0.1 / self.hf) ** 2
         tcr_r = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (0.1 / self.hr) ** 2
 
-        return max(abs(tcr_f - tcr_r))
+        return tcr_f, tcr_f
 
     def spar_geometry(self):
         tf = np.linspace(0.1, 0.5, num=100)
@@ -62,9 +62,9 @@ class BuckleWeb:
 
     def total_shear(self, ks):
         total_yz = (self.shear_ave()[0] + self.shear_flow()[0]) * 0.1
-        comparison_yz = self.cri_buckle_web(ks) - total_yz
+        comparison_yz = self.cri_buckle_web(ks)[0] - total_yz
         total_xz = (self.shear_ave()[1] + self.shear_flow()[1]) * 0.1
-        comparison_xz = self.cri_buckle_web(ks) - total_xz
+        comparison_xz = self.cri_buckle_web(ks)[1] - total_xz
 
         return total_yz, comparison_yz, total_xz, comparison_xz
 
@@ -104,4 +104,4 @@ class BuckleColumn:
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
 
-print(BuckleWeb(69e9, 0.33).plotting_shear())
+print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
