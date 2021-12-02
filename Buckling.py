@@ -59,14 +59,17 @@ class BuckleWeb:
 
     def shear_ave(self):
         z = self.span
-        V = Sc.TotalShearDistxz(z)
-        shear_stres = V / (self.hf * self.tf + self.hr * self.tr)
+        V_yz = Sc.TotalShearyz(z)
+        V_xz = Sc.TotalShearxz(z)
+        shear_stress_yz = V_yz / (self.hf * self.spar_geometry()[0] + self.hr * self.spar_geometry()[1])
+        shear_stress_xz = V_xz / (self.hf * self.spar_geometry()[0] + self.hr * self.spar_geometry()[1])
 
-        return shear_stres
+        return shear_stress_yz, shear_stress_xz
 
     def shear_flow(self):
         z = self.span
-        T = Sc.TotalShearDistxz(z)
+        T_yz = Sc.TotalShearyz(z)
+        T_xz = Sc.TotalShearxz(z)
         A = cross_section_area(z)
 
         return T_yz / (2 * A), T_xz / (2 * A)
@@ -77,14 +80,17 @@ class BuckleWeb:
         total_xz = (self.shear_ave()[1] + self.shear_flow()[1]) * 0.1
         comparison_xz = self.cri_buckle_web(ks)[1] - total_xz
 
-    def total_shear(self):
-        return self.shear_ave + self.shear_flow * self.t
+        return total_yz, comparison_yz, total_xz, comparison_xz
 
     def plotting_shear(self):
-        plt.plot(self.span, self.total_shear)
+        plt.plot(self.span, self.total_shear(1)[0], 'r-' , label="yz-Plane")
+        plt.plot(self.span, self.total_shear(1)[2], 'b-', label="xz-Plane")
         plt.xlabel("Span [m]")
         plt.ylabel("Shear Stress [MPa]")
-        plt.plot()
+        plt.grid(b = True, which = 'major')
+        plt.legend()
+        plt.show()
+
 
 
 class BuckleSkin:
