@@ -36,21 +36,26 @@ class StressCalcs:
 
 
 class BuckleWeb:
-    def __init__(self, E, p_ratio, t, web_width, web_height, spar_height_front, spar_t_front, spar_height_rear,
-                 spar_t_rear):
-        self.E = E
-        self.p_ratio = p_ratio
-        self.t = t
-        self.b = web_width
-        self.h = web_height
-        self.hf = spar_height_front
-        self.tf = spar_t_front
-        self.hr = spar_height_rear
-        self.tr = spar_t_rear
-        self.span = Al.AeroLoads(0.333, 247.66, 4.42, 0.01).total_dist()[0]
+    def __init__(self):
+        self.E = 69e3
+        self.p_ratio = 0.33
+        self.span = np.linspace(0, 51.73 / 2, num=100)
+        self.c_spar1 = Mi.c_spar1
+        self.c_spar2 = Mi.c_spar2
+        self.hf = np.linspace(Mi.t_c_spar1 * self.c_spar1 * Mi.c(0), Mi.t_c_spar1 * self.c_spar1 * Mi.c(self.span[-1]), num=100)
+        self.hr = np.linspace(Mi.t_c_spar2 * self.c_spar2 * Mi.c(0), Mi.t_c_spar2 * self.c_spar2 * Mi.c(self.span[-1]), num=100)
 
     def cri_buckle_web(self, ks):
-        return (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio**2)) * (self.t / self.b) ** 2
+        tcr_f = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (0.1 / self.hf) ** 2
+        tcr_r = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (0.1 / self.hr) ** 2
+
+        return tcr_f, tcr_f
+
+    def spar_geometry(self):
+        tf = np.linspace(0.1, 0.5, num=100)
+        tr = np.linspace(0.1, 0.5, num=100)
+
+        return tf, tr
 
     def shear_ave(self):
         z = self.span
@@ -64,7 +69,13 @@ class BuckleWeb:
         T = Sc.TotalShearDistxz(z)
         A = cross_section_area(z)
 
-        return T / (2 * A)
+        return T_yz / (2 * A), T_xz / (2 * A)
+
+    def total_shear(self, ks):
+        total_yz = (self.shear_ave()[0] + self.shear_flow()[0]) * 0.1
+        comparison_yz = self.cri_buckle_web(ks)[0] - total_yz
+        total_xz = (self.shear_ave()[1] + self.shear_flow()[1]) * 0.1
+        comparison_xz = self.cri_buckle_web(ks)[1] - total_xz
 
     def total_shear(self):
         return self.shear_ave + self.shear_flow * self.t
@@ -102,8 +113,4 @@ class BuckleColumn:
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
 
-
-#print(stress_at_span("lift", 0.5, 1000))
-
-
-print(StressCalcs("lift", 0.5, 1000).stress_along_span())
+print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
