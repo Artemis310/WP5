@@ -170,9 +170,9 @@ def Hat_stringer(heigth, lowerleft_width,lowerright_width, upper_width, thicknes
 
     tot_area = lowerleft_width*thickness + lowerright_width*thickness+2*heigth*thickness+upper_width*thickness
 
-    Ixx = 2*(thickness*heigth**3)/12 + heigth*thickness*(y_bar - y_heightleft)**2 + heigth*thickness*(y_heightright-y_bar)**2 + lowerleft_width*thickness(y_bar-y_lowerleft)**2 + lowerright_width*thickness*(y_bar-y_lowerright)**2 + upper_width*thickness*(y_bar-y_upper)**2
+#    Ixx = 2*(thickness*heigth**3)/12 + heigth*thickness*(y_bar - y_heightleft)**2 + heigth*thickness*(y_heightright-y_bar)**2 + lowerleft_width*thickness(y_bar-y_lowerleft)**2 + lowerright_width*thickness*(y_bar-y_lowerright)**2 + upper_width*thickness*(y_bar-y_upper)**2
     Iyy = (thickness*lowerleft_width**3)/12 + (thickness*lowerleft_width**3)/12 + (thickness*upper_width**3)/12 + lowerleft_width*thickness*(x_bar-x_lowerleft)**2 + lowerright_width*thickness*(x_bar-x_lowerright)**2 + heigth*thickness*(x_bar-x_heightleft)**2 +heigth*thickness*(x_bar-x_heightright)**2 + upper_width*thickness*(x_bar-x_upper)**2
-    return  Ixx, Iyy, tot_area, x_bar, y_bar
+    return Iyy, tot_area, x_bar, y_bar
 
 print("Hat-stringer: Ixx, Iyy, Hat_area, x_bar_Hat, y_bar_Hat = ", Hat_stringer(1, 0.25, 0.25, 0.5, 0.001))
 
