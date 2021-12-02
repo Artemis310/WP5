@@ -11,13 +11,13 @@ import moment_diagram as Md
 
 
 
-def stress_at_span(plane, cross_section_y, data_count):
-    span_location = np.linspace(0, 51.73/2, data_count)
+# def stress_at_span(plane, cross_section_y, data_count):
+#     span_location = np.linspace(0, 51.73/2, data_count)
     
-    if plane.lower == "Lift":
-        return np.array(span_location,(Md.moment_yz_vec(span_location)*cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
-    else:
-        return np.array(span_location, (Md.moment_zx_vec(span_location)*cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
+#     if plane.lower == "Lift":
+#         return np.array(span_location,(Md.moment_yz_vec(span_location)*cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
+#     else:
+#         return np.array(span_location, (Md.moment_zx_vec(span_location)*cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
 
 
 def cross_section_area(y):
@@ -33,9 +33,9 @@ class StressCalcs:
         span_location = np.linspace(0, 51.73/2, self.data_count)
     
         if self.plane.lower == "Lift":
-            return np.column_stack(span_location,(Md.moment_yz_vec(span_location)*self.cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
+            return np.column_stack(span_location,(Md.moment_yz_vec(span_location)*self.cross_section_y) * 1 / 2) #Mi.moment_inertia_xx_func(span_location))
         else:
-            return np.column_stack(span_location, (Md.moment_zx_vec(span_location)*self.cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
+            return np.column_stack((span_location, (Md.moment_zx_vec(span_location)*self.cross_section_y) * 1 / 2)) #Mi.moment_inertia_xx_func(span_location))
 
     def find_stress_at_span(self):
         return None
