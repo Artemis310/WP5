@@ -5,8 +5,8 @@ import seaborn as sns
 from scipy import integrate
 from scipy import interpolate
 import AeroLoads as Al
-from WP_4 import Shear_Calculations as Sc
-from WP_4 import moment_inerta as Mi
+import Shear_Calculations as Sc
+import moment_inerta as Mi
 
 
 
