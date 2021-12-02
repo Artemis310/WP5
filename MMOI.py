@@ -1,7 +1,6 @@
 import math
 from math import pi
 
-
 def L_stringer(height, lower_width, thickness):  # horizontal part of L is width and vertical part is height
     x_lower = lower_width / 2
     x_height = 0
@@ -224,3 +223,6 @@ specific_Iyy_list = [L_stringer(0.5, 0.25, 0.001)[6],I_stringer(0.5, 0.25, 0.25,
 rounded_specific_Iyy_list = [round(num,3) for num in specific_Iyy_list]
 print(rounded_specific_Ixx_list)
 print(rounded_specific_Iyy_list)
+
+
+dictionary = {"L":L_stringer(0.5, 0.25, 0.001)[5]}
