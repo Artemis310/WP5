@@ -3,6 +3,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import Shear_Calculations as scalc
+from MMOI import C_stringer
 
 # general constants
 """ Here are the constants for the wingbox, these constants are related
