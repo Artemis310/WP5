@@ -35,12 +35,28 @@ class BuckleWeb:
 
     def shear_ave(self):
         z = self.span
-        Vx = Sc.TotalShearDistxz(z)
-        Vy = Sc.TotalShearDistyz(z)
-        shear_stress_x = Vx / (self.hf * self.tf + self.hr * self.tr)
-        shear_stress_y = Vy / (self.hf * self.tf + self.hr * self.tr)
+        V = Sc.TotalShearDistxz(z)
+        shear_stres = Vx/ (self.hf * self.tf + self.hr * self.tr)
 
-        return shear_stress_x, shear_stress_y
+        return shear_stres
+
+    def shear_flow(self):
+        z = self.span
+        T = Sc.TotalShearDistxz(z)
+        A = cross_section_area(z)
+
+        return T / (2 * A)
+
+    def total_shear(self):
+        return self.shear_ave + self.shear_flow * self.t
+
+    def plotting_shear(self):
+        plt.plot(self.span, self.total_shear)
+        plt.xlabel("Span [m]")
+        plt.ylabel("Shear Stress [MPa]")
+        plt.plot()
+
+
 class BuckleSkin:
     def __init__(self, span_location, kc ,E, t, stringer_count, stringer_width, p_ratio, plate_width,b):
         self.span_location = span_location
