@@ -1,5 +1,7 @@
 import math
 from math import pi
+from typing import no_type_check
+import numpy as np
 
 def L_stringer(height, lower_width, thickness):  # horizontal part of L is width and vertical part is height
     x_lower = lower_width / 2
@@ -226,12 +228,18 @@ specific_Iyy_list = [round(num,4) for num in specific_Iyy_list]
 
 
 
-dict_Ixx = {"L":specific_Ixx_list[0], "I":specific_Ixx_list[1], "s": specific_Ixx_list[2], "c":specific_Ixx_list[3], "T":specific_Ixx_list[4],
-              "j":specific_Ixx_list[5], "hat":specific_Ixx_list[6]}
-dict_Iyy = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "s": specific_Iyy_list[2], "c":specific_Iyy_list[3], "T":specific_Iyy_list[4],
-              "j":specific_Iyy_list[5], "hat":specific_Iyy_list[6]}
+dict_Ixx = {"L":specific_Ixx_list[0], "I":specific_Ixx_list[1], "S": specific_Ixx_list[2], "C":specific_Ixx_list[3], "T":specific_Ixx_list[4],
+              "J":specific_Ixx_list[5], "Hat":specific_Ixx_list[6]}
+dict_Iyy = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "S": specific_Iyy_list[2], "C":specific_Iyy_list[3], "T":specific_Iyy_list[4],
+              "J":specific_Iyy_list[5], "Hat":specific_Iyy_list[6]}
+
+dict_ratio = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "S": specific_Iyy_list[2], "C":specific_Iyy_list[3], "T":specific_Iyy_list[4],
+              "J":specific_Iyy_list[5], "Hat":specific_Iyy_list[6]}
 
 sorted_spec_Ixx = sorted(dict_Ixx.items(), key=lambda x: x[1], reverse=True)
 sorted_spec_Iyy = sorted(dict_Iyy.items(), key=lambda x: x[1], reverse=True)
+
+
+
 print(sorted_spec_Ixx)
 print(sorted_spec_Iyy)
