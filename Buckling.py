@@ -51,11 +51,14 @@ class BuckleWeb:
 
         return T / (2 * A)
 
-    def total_shear(self):
-        return self.shear_ave + self.shear_flow * self.t
+    def total_shear(self, ks):
+        total = (self.shear_ave + self.shear_flow) * self.t
+        comparison = self.cri_buckle_web(ks) - total
+
+        return total, comparison
 
     def plotting_shear(self):
-        plt.plot(self.span, self.total_shear)
+        plt.plot(self.span, self.total_shear[0], 'r-')
         plt.xlabel("Span [m]")
         plt.ylabel("Shear Stress [MPa]")
         plt.plot()
@@ -87,4 +90,4 @@ class BuckleColumn:
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
 
-print(BuckleWeb(0, 1, 1, 1, 1, 1, 1, 1, 1).plotting_shear())
+print(BuckleWeb(69e9, 0.33, 0.002, ).total_shear(1)[1])
