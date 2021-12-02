@@ -16,7 +16,7 @@ class AeroLoads:
         self.num = int(self.end/self.dy)
 
     def interpol(self):
-        la_0 = np.genfromtxt('MainWing_a=0.00_v=10.00ms.txt', skip_header=40, skip_footer=1029)
+        la_0 = np.genfromtxt("MainWing_a=0.00_v=10.00ms.txt", skip_header=40, skip_footer=1029)
         la_10 = np.genfromtxt('MainWing_a=10.00_v=10.00ms.txt', skip_header=40, skip_footer=1029)
 
         ylst = []
