@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import integrate
 from scipy import interpolate
-from WP_4 import AeroLoads as Al
+import AeroLoads as Al
 from WP_4 import Shear_Calculations as Sc
 from WP_4 import moment_inerta as Mi
 
