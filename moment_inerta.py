@@ -1,6 +1,7 @@
 from scipy import interpolate
 import numpy as np
 import math
+from MMOI import C_stringer
 import matplotlib.pyplot as plt
 import Shear_Calculations as scalc
 from MMOI import C_stringer
@@ -105,7 +106,7 @@ def spacing_str_bot(y, n_str_bot, width_str_bot):
 slope_top = math.atan((y_coord1(c_spar2) - y_coord1(c_spar1)) / (c_spar2 - c_spar1))
 
 
-def moment_inertia_xx_func(y, n_str_top, n_str_bot, width_str, area_str, centroid_x, centroid_y, th_spar, th_flang):
+def moment_inertia_xx_func(y, n_str_top, n_str_bot, width_str, area_str, centroid_x, centroid_y, th_spar, th_flang, height_str,thick):
     # create array with verticale distance to centroid of stringer
     """th1 is the thickness for the spar and th2 for the flanges """
     # constants
@@ -133,6 +134,7 @@ def moment_inertia_xx_func(y, n_str_top, n_str_bot, width_str, area_str, centroi
     neutral_axis_height = (centroid_steiner_terms_top + centroid_steiner_terms_bot + centroid_term_z4 + centroid_term_z1 + centroid_term_x3 + centroid_term_x1) / tot_area
 
     """Now the neutral axis has been computed the moment of inertia terms will have to be computed"""
+    moment_inert_string =  (n_str_top + n_str_bot) * C_stringer(width_str,height_str,width_str,thick)[0]
     inert_steiner_terms_top = sum((dist_arr - neutral_axis_height) ** 2 * area_str)
     inert_steiner_terms_bot = (y_coord2(c_spar1) * c(y) - neutral_axis_height) ** 2 * area_str * n_str_bot
     inert_term_x1 = (th_flang * x1(y) ** 3 * math.sin(slope_top) ** 2) / 12 + x1(y) * th_spar * (
@@ -143,7 +145,7 @@ def moment_inertia_xx_func(y, n_str_top, n_str_bot, width_str, area_str, centroi
     inert_term_z4 = (th_spar * z4(y) ** 3) / 12 + th_spar * (
             (y_coord1(c_spar2) * c(y) - y_coord2(c_spar2) * c(y)) - neutral_axis_height) ** 2
 
-    tot_inert = inert_steiner_terms_top + inert_steiner_terms_bot + inert_term_x3 + inert_term_z4 + inert_term_z1 + inert_term_x1
+    tot_inert = inert_steiner_terms_top + inert_steiner_terms_bot + inert_term_x3 + inert_term_z4 + inert_term_z1 + inert_term_x1 + moment_inert_string
 
     return neutral_axis_height, tot_inert
 
@@ -160,7 +162,7 @@ def tot_area(y, n_str_top, n_str_bot, area_str, thickness):
     return tot_area
 
 
-def moment_inertia_yy_func(y, n_str_top, n_str_bot, width_str, area_str, centroid_x, centroid_y, th_spar, th_flang):
+def moment_inertia_yy_func(y, n_str_top, n_str_bot, width_str, area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick):
     # create array with verticale distance to centroid of stringer
     """th1 is the thickness for the spar and th2 for the flanges """
     # constants
@@ -199,6 +201,7 @@ def moment_inertia_yy_func(y, n_str_top, n_str_bot, width_str, area_str, centroi
 
     neut_axis_x = (centroid_steiner_terms_top + centroid_steiner_terms_bot + centroid_term_z4 + centroid_term_z1 + centroid_term_x3 + centroid_term_x1) / tot_area
 
+    moment_inert_string = (n_str_top + n_str_bot) * C_stringer(width_str, height_str, width_str, thick)[1]
     inert_steiner_terms_top = sum(area_str * (dist_arr_top - neut_axis_x) ** 2)
     inert_steiner_terms_bot =  sum(area_str * (dist_arr_bot - neut_axis_x) ** 2)
     inert_term_x1 = (th_flang * x1(y) ** 3 * math.cos(slope_top) ** 2) / 12 + x1(y) * th_spar * (neut_axis_x - (c_spar1 * c(y) + 0.5 * x1(y) * math.cos(slope_top))) ** 2
@@ -206,7 +209,7 @@ def moment_inertia_yy_func(y, n_str_top, n_str_bot, width_str, area_str, centroi
     inert_term_z1 = (th_spar ** 3 * z1(y)) / 12 + z1(y) * th_spar * (neut_axis_x - c_spar1 * c(y)) ** 2
     inert_term_z4 = (th_spar ** 3 * z4(y)) / 12 + z4(y) * th_spar * (neut_axis_x - c_spar2 * c(y)) ** 2
 
-    tot_inert = inert_steiner_terms_top + inert_steiner_terms_bot + inert_term_x3 + inert_term_z4 + inert_term_z1 + inert_term_x1
+    tot_inert = inert_steiner_terms_top + inert_steiner_terms_bot + inert_term_x3 + inert_term_z4 + inert_term_z1 + inert_term_x1 + moment_inert_string
 
     return neut_axis_x , tot_inert
 
