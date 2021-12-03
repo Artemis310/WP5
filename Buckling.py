@@ -15,21 +15,22 @@ def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
 
 class StressCalcs:
-    def __init__(self, plane, cross_section_y, data_count):
+    def __init__(self, plane, cross_section_dist, data_count):
         self.plane = plane
-        self.cross_section_y = cross_section_y
+        self.cross_section_dist = cross_section_dist
         self.data_count =  data_count
     
     def stress_along_span(self):
         span_location = np.linspace(0, 51.73/2, self.data_count)
     
         if self.plane.lower == "Lift":
-            return np.column_stack((span_location,(Md.moment_yz_vec(span_location)*self.cross_section_y) / Mi.moment_inertia_xx_func(span_location)))
+            return np.column_stack((span_location,(Md.moment_yz_vec(span_location)*self.cross_section_dist) / 1)) #Mi.moment_inertia_xx_func(span_location)))
         else:
-            return np.column_stack((span_location, (Md.moment_zx_vec(span_location)*self.cross_section_y) / Mi.moment_inertia_xx_func(span_location)))
+            return np.column_stack((span_location, (Md.moment_zx_vec(span_location)*self.cross_section_dist) / 1)) #Mi.moment_inertia_xx_func(span_location)))
 
     def find_stress_at_span(self, span_position):
-        return np.where(self.stress_along_span()[:,1] <= span_position)
+        stress_index = np.where(self.stress_along_span()[:,0] <= span_position)[0][-1]
+        return span_position, self.stress_along_span()[stress_index, 1]
 
     def plotting_stress(self):
         return None
@@ -119,4 +120,7 @@ class BuckleColumn:
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
 
-print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
+#print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
+
+
+print(StressCalcs("lift", 0.5, 1000).stress_along_span())
