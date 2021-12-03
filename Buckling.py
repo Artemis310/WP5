@@ -9,25 +9,7 @@ import Shear_Calculations as Sc
 import moment_inerta as Mi
 import moment_diagram as Md
 
-sns.set()
 
-<<<<<<< HEAD
-# def stress_at_span(plane, cross_section_y, data_count):
-#     span_location = np.linspace(0, 51.73/2, data_count)
-    
-#     if plane.lower == "Lift":
-#         return np.array(span_location,(Md.moment_yz_vec(span_location)*cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
-#     else:
-#         return np.array(span_location, (Md.moment_zx_vec(span_location)*cross_section_y) * 1 / Mi.moment_inertia_xx_func(span_location))
-
-=======
-def stress_at_span(plane, span_location, cross_section_y):
-    if plane.lower == "L":
-        return (Md.moment_yz_vec(span_location)*cross_section_y) / Mi.moment_inertia_xx_func
-    else:
-        (Md.moment_zx_vec(span_location))*cross_section_y / Mi.moment_inertia_xx_func
-    
->>>>>>> 100a54ae22ac9c2303d2b03712fc59736997b7df
 
 def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
@@ -42,18 +24,21 @@ class StressCalcs:
         span_location = np.linspace(0, 51.73/2, self.data_count)
     
         if self.plane.lower == "Lift":
-            return np.column_stack(span_location,(Md.moment_yz_vec(span_location)*self.cross_section_y) * 1 / 2) #Mi.moment_inertia_xx_func(span_location))
+            return np.column_stack((span_location,(Md.moment_yz_vec(span_location)*self.cross_section_y) / Mi.moment_inertia_xx_func(span_location)))
         else:
-            return np.column_stack((span_location, (Md.moment_zx_vec(span_location)*self.cross_section_y) * 1 / 2)) #Mi.moment_inertia_xx_func(span_location))
+            return np.column_stack((span_location, (Md.moment_zx_vec(span_location)*self.cross_section_y) / Mi.moment_inertia_xx_func(span_location)))
 
-    def find_stress_at_span(self):
+    def find_stress_at_span(self, span_position):
+        return np.where(self.stress_along_span()[:,1] <= span_position)
+
+    def plotting_stress(self):
         return None
 
 
 class BuckleWeb:
-    def __init__(self, E, p_ratio,):
-        self.E = E
-        self.p_ratio = p_ratio
+    def __init__(self):
+        self.E = 69e3
+        self.p_ratio = 0.33
         self.span = np.linspace(0, 51.73 / 2, num=100)
         self.c_spar1 = Mi.c_spar1
         self.c_spar2 = Mi.c_spar2
@@ -64,7 +49,7 @@ class BuckleWeb:
         tcr_f = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (0.1 / self.hf) ** 2
         tcr_r = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (0.1 / self.hr) ** 2
 
-        return max(abs(tcr_f - tcr_r))
+        return tcr_f, tcr_f
 
     def spar_geometry(self):
         tf = np.linspace(0.1, 0.5, num=100)
@@ -91,9 +76,9 @@ class BuckleWeb:
 
     def total_shear(self, ks):
         total_yz = (self.shear_ave()[0] + self.shear_flow()[0]) * 0.1
-        comparison_yz = self.cri_buckle_web(ks) - total_yz
+        comparison_yz = self.cri_buckle_web(ks)[0] - total_yz
         total_xz = (self.shear_ave()[1] + self.shear_flow()[1]) * 0.1
-        comparison_xz = self.cri_buckle_web(ks) - total_xz
+        comparison_xz = self.cri_buckle_web(ks)[1] - total_xz
 
         return total_yz, comparison_yz, total_xz, comparison_xz
 
@@ -105,6 +90,7 @@ class BuckleWeb:
         plt.grid(b = True, which = 'major')
         plt.legend()
         plt.show()
+
 
 
 class BuckleSkin:
@@ -133,12 +119,4 @@ class BuckleColumn:
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
 
-<<<<<<< HEAD
-
-#print(stress_at_span("lift", 0.5, 1000))
-
-
-print(StressCalcs("lift", 0.5, 1000).stress_along_span())
-=======
-print(BuckleWeb(69e9, 0.33).plotting_shear())
->>>>>>> 100a54ae22ac9c2303d2b03712fc59736997b7df
+print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
