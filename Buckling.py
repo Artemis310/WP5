@@ -15,25 +15,40 @@ def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
 
 class StressCalcs:
-    def __init__(self, plane, cross_section_dist, data_count):
+    def __init__(self, plane = None, cross_section_dist_z = 0, cross_section_dist_x = 0, data_count = 1000):
         self.plane = plane
-        self.cross_section_dist = cross_section_dist
+        self.cross_section_dist_z = cross_section_dist_z
+        self.cross_section_dist_x = cross_section_dist_x
         self.data_count =  data_count
     
-    def stress_along_span(self):
-        span_location = np.linspace(0, 51.73/2, self.data_count)
-    
+    def stress_along_span(self, span_min = 0, span_max = 51.73/2):
+        span_locations = np.linspace(span_min, span_max, self.data_count)
+
         if self.plane.lower == "Lift":
-            return np.column_stack((span_location,(Md.moment_yz_vec(span_location)*self.cross_section_dist) / 1)) #Mi.moment_inertia_xx_func(span_location)))
+            return np.column_stack((span_locations,(Md.moment_yz_vec(span_locations)*self.cross_section_dist_z) / 1)) #Mi.moment_inertia_xx_func(span_location)))
+        elif self.plane.lower == "Drag":
+            return np.column_stack((span_locations, (Md.moment_zx_vec(span_locations)*self.cross_section_dist_x) / 1)) #Mi.moment_inertia_yy_func(span_location)))
         else:
-            return np.column_stack((span_location, (Md.moment_zx_vec(span_location)*self.cross_section_dist) / 1)) #Mi.moment_inertia_xx_func(span_location)))
+            return np.column_stack((span_locations, (Md.moment_yz_vec(span_locations)*self.cross_section_dist_z) / 1
+            + (Md.moment_zx_vec(span_locations)*self.cross_section_dist_x) / 1))  #double check this equation, as well as the one above
 
     def find_stress_at_span(self, span_position):
         stress_index = np.where(self.stress_along_span()[:,0] <= span_position)[0][-1]
         return span_position, self.stress_along_span()[stress_index, 1]
 
     def plotting_stress(self):
-        return None
+        if self.plane.lower == "Lift":
+            plot_label = "yz Plane"
+        elif self.plane.lower == "Drag":
+            plot_label = "xz Plane"
+        else:
+            plot_label = "Stress due to yz and xz plane bending"
+        plt.plot(self.stress_along_span()[:,0], self.stress_along_span()[:,1], 'k-' , label = plot_label)
+        plt.xlabel("Span [m]")
+        plt.ylabel("Normal Stress [MPa]")
+        plt.grid(b = True, which = 'major')
+        plt.legend()
+        plt.show()
 
 
 class BuckleWeb:
@@ -123,4 +138,7 @@ class BuckleColumn:
 #print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
 
 
-print(StressCalcs("lift", 0.5, 1000).stress_along_span())
+#print(StressCalcs("lift", 0.5, 1000).stress_along_span())
+stress = StressCalcs("Lift", 0.5, 0, 1000)
+
+stress.plotting_stress()
