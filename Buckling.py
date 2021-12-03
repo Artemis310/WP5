@@ -14,6 +14,9 @@ import moment_diagram as Md
 def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
 
+def cross_section_coordinates(span_pos):
+    return None
+    
 class StressCalcs:
     def __init__(self, plane = None, cross_section_dist_z = 0, cross_section_dist_x = 0, data_count = 1000):
         self.plane = plane
