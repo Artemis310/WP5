@@ -14,6 +14,7 @@ import moment_diagram as Md
 def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
 
+
 def cross_section_coordinates(span_pos):
     return None
     
@@ -137,6 +138,9 @@ class BuckleColumn:
 
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
+
+
+
 
 #print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
 
