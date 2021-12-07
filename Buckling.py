@@ -9,15 +9,27 @@ import Shear_Calculations as Sc
 import moment_inerta as Mi
 import moment_diagram as Md
 
+#Material Constants
+tens_yield_strength = 276 * 10**6
+ult_yield_strength = 310 * 10**6
 
 
 def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
 
+def corner_points(span_position):
+    NA_z = Mi.moment_inertia_xx_func()[0]
+    Na_x = Mi.moment_inertia_yy_func()[0]
 
-def cross_section_coordinates(span_pos):
-    return None
-    
+    top_right_z = Mi.y_coord1(span_position)*0.61*Mi.c(span_position) - NA_z
+    top_left_z = Mi.y_coord1(span_position)*0.2*Mi.c(span_position) - NA_z
+    bottom_z = Mi.y_coord2(span_position)*0.61*Mi.c(span_position) - NA_z
+
+    right_spar_x = 0.61*Mi.c(span_position) - Na_x
+    left_spar_x = 0.2*Mi.c(span_position) - Na_x
+
+    return top_right_z, top_left_z, bottom_z, right_spar_x, left_spar_x
+
 class NormalStressCalcs:
     def __init__(self, plane = None, cross_section_dist_z = 0, cross_section_dist_x = 0, data_count = 1000):
         self.plane = plane
@@ -29,12 +41,12 @@ class NormalStressCalcs:
         span_locations = np.linspace(span_min, span_max, self.data_count)
 
         if self.plane.lower == "Lift":
-            return np.column_stack((span_locations,(Md.moment_yz_vec(span_locations)*self.cross_section_dist_z) / 1)) #Mi.moment_inertia_xx_func(span_location)))
+            return np.column_stack((span_locations,(Md.moment_yz_vec(span_locations)*self.cross_section_dist_z) / Mi.moment_inertia_xx_func(span_locations)[1]))
         elif self.plane.lower == "Drag":
-            return np.column_stack((span_locations, (Md.moment_zx_vec(span_locations)*self.cross_section_dist_x) / 1)) #Mi.moment_inertia_yy_func(span_location)))
+            return np.column_stack((span_locations, (Md.moment_zx_vec(span_locations)*self.cross_section_dist_x) / Mi.moment_inertia_yy_func(span_locations)[1]))
         else:
             return np.column_stack((span_locations, (Md.moment_yz_vec(span_locations)*self.cross_section_dist_z) / 1
-            + (Md.moment_zx_vec(span_locations)*self.cross_section_dist_x) / 1))  #double check this equation, as well as the one above
+            + (Md.moment_zx_vec(span_locations)*self.cross_section_dist_x) / Mi.moment_inertia_yy_func(span_locations)[1]))  #double check this equation, as well as the one above
 
     def find_stress_at_span(self, span_position):
         stress_index = np.where(self.stress_along_span()[:,0] <= span_position)[0][-1]
@@ -126,7 +138,7 @@ class BuckleSkin:
         self.b = plate_width/self.stringer_count - stringer_width
 
     def crit_buckle_skin(self):
-        return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.t))**2
+        return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.b))**2
 
 class BuckleColumn:
     def __init__(self, K, E, I, L, A):
@@ -140,12 +152,22 @@ class BuckleColumn:
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
 
 
+class MarginOfSafety:
+    def __init__(self, span_position):
+        self.span_position = span_position
+
+    def find_mos(self):
+        applied_stress_top_right = NormalStressCalcs("Combined", corner_points(self.span_position)[0], corner_points(self.span_position)[3]).find_stress_at_span(self.span_position)
+        applied_stress_top_left = NormalStressCalcs("Combined", corner_points(self.span_position)[1], corner_points(self.span_position)[-1]).find_stress_at_span(self.span_position)
+        applied_stress_bottom_left = NormalStressCalcs("Combined", corner_points(self.span_position)[2], corner_points(self.span_position)[-1]).find_stress_at_span(self.span_position)
+        applied_stress_bottom_right = NormalStressCalcs("Combined", corner_points(self.span_position)[2], corner_points(self.span_position)[3]).find_stress_at_span(self.span_position)
+
+        
+
+# print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
 
 
-#print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
-
-
-#print(StressCalcs("lift", 0.5, 1000).stress_along_span())
-# stress = StressCalcs("Lift", 0.5, 0, 1000)
+# print(NormalStressCalcs("lift", 0.5, 1000).stress_along_span())
+# stress = NormalStressCalcs("Lift", 0.5, 0, 1000)
 
 # stress.plotting_stress()
