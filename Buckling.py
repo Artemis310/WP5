@@ -9,6 +9,7 @@ import Shear_Calculations as Sc
 import moment_inerta as Mi
 import moment_diagram as Md
 
+
 sns.set()
 
 
