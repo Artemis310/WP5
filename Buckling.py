@@ -32,6 +32,8 @@ def corner_points(span_position):
 
     return top_right_z, top_left_z, bottom_z, right_spar_x, left_spar_x
 
+corner_points_vec = np.vectorize(corner_points)
+
     
 class NormalStressCalcs:
     def __init__(self, plane = None, cross_section_dist_z = 0, cross_section_dist_x = 0):
@@ -179,12 +181,21 @@ class MarginOfSafety:
         self.span_position = span_position
 
     def find_mos(self):
-        applied_stress_top_right = NormalStressCalcs("Combined", corner_points(self.span_position)[0], corner_points(self.span_position)[3]).find_stress_at_span(self.span_position)
-        applied_stress_top_left = NormalStressCalcs("Combined", corner_points(self.span_position)[1], corner_points(self.span_position)[-1]).find_stress_at_span(self.span_position)
-        applied_stress_bottom_left = NormalStressCalcs("Combined", corner_points(self.span_position)[2], corner_points(self.span_position)[-1]).find_stress_at_span(self.span_position)
-        applied_stress_bottom_right = NormalStressCalcs("Combined", corner_points(self.span_position)[2], corner_points(self.span_position)[3]).find_stress_at_span(self.span_position)
+        applied_stress_top_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[0], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
+        applied_stress_top_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[1], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
+        applied_stress_bottom_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
+        applied_stress_bottom_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
 
+        fail_comp_normal = min(BuckleSkin(self.span_position).crit_buckle_skin, BuckleColumn(self.span_position).crit_buckle_stringer)
+        fail_comp_shear = BuckleWeb(self.span_position).cri_buckle_web
 
+        margin_of_safety_at_span = min(fail_comp_normal/NormalStressCalcs("Combined").find_stress_at_span(self.span_position), fail_comp_shear/1 )
+
+        return margin_of_safety_at_span
+
+    def plot_mos(self):
+        return None
+        
 
 print(BuckleWeb().plotting_shear())
 
