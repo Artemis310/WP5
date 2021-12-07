@@ -189,7 +189,7 @@ class MarginOfSafety:
         fail_comp_normal = min(BuckleSkin(self.span_position).crit_buckle_skin, BuckleColumn(self.span_position).crit_buckle_stringer)
         fail_comp_shear = BuckleWeb(self.span_position).cri_buckle_web
 
-        margin_of_safety_at_span = min(fail_comp_normal/NormalStressCalcs("Combined").find_stress_at_span(self.span_position), fail_comp_shear/1)
+        margin_of_safety_at_span = min(fail_comp_normal/NormalStressCalcs("Combined").find_stress_at_span(self.span_position), fail_comp_shear/1 )
 
         return margin_of_safety_at_span
 
@@ -201,10 +201,11 @@ class MarginOfSafety:
         
 
 
-print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[2])
+# print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[2])
 
 
 #print(StressCalcs("lift", 0.5, 1000).stress_along_span())
 # stress = StressCalcs("Lift", 0.5, 0, 1000)
 
 # stress.plotting_stress()
+
