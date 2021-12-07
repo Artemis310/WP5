@@ -186,7 +186,7 @@ class MarginOfSafety:
 
 
 
-print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[2])
+print(BuckleWeb().plotting_shear())
 
 
 #print(StressCalcs("lift", 0.5, 1000).stress_along_span())
