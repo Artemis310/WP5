@@ -9,6 +9,7 @@ import Shear_Calculations as Sc
 import moment_inerta as Mi
 import moment_diagram as Md
 
+sns.set()
 
 
 def cross_section_area(y):
@@ -65,17 +66,17 @@ class BuckleWeb:
         self.hf = np.linspace(Mi.t_c_spar1 * self.c_spar1 * Mi.c(0), Mi.t_c_spar1 * self.c_spar1 * Mi.c(self.span[-1]), num=100)
         self.hr = np.linspace(Mi.t_c_spar2 * self.c_spar2 * Mi.c(0), Mi.t_c_spar2 * self.c_spar2 * Mi.c(self.span[-1]), num=100)
 
-    def cri_buckle_web(self, ks):
-        tcr_f = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (0.1 / self.hf) ** 2
-        tcr_r = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (0.1 / self.hr) ** 2
-
-        return tcr_f, tcr_f
-
     def spar_geometry(self):
         tf = np.linspace(0.1, 0.5, num=100)
         tr = np.linspace(0.1, 0.5, num=100)
 
         return tf, tr
+
+    def cri_buckle_web(self, ks):
+        tcr_f = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (self.spar_geometry()[0] / self.hf) ** 2
+        tcr_r = (np.pi**2 * ks * self.E) / (12 * (1 - self.p_ratio ** 2)) * (self.spar_geometry()[1] / self.hr) ** 2
+
+        return tcr_f, tcr_r
 
     def shear_ave(self):
         z = self.span
@@ -100,11 +101,16 @@ class BuckleWeb:
         total_xz = (self.shear_ave()[1] + self.shear_flow()[1]) * 0.1
         comparison_xz = self.cri_buckle_web(ks)[1] - total_xz
 
-        return total_yz, comparison_yz, total_xz, comparison_xz
+        if comparison_yz.any() or comparison_xz.any()> 0:
+            ans = "Point(s) along the span have a higher stress than the critical"
+        else:
+            ans = "All is Good"
+
+        return total_yz, total_xz, ans
 
     def plotting_shear(self):
         plt.plot(self.span, self.total_shear(1)[0], 'r-' , label="yz-Plane")
-        plt.plot(self.span, self.total_shear(1)[2], 'b-', label="xz-Plane")
+        plt.plot(self.span, self.total_shear(1)[1], 'b-', label="xz-Plane")
         plt.xlabel("Span [m]")
         plt.ylabel("Shear Stress [MPa]")
         plt.grid(b = True, which = 'major')
@@ -142,7 +148,8 @@ class BuckleColumn:
 
 
 
-#print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[1:3:1])
+ks = 2
+print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear(ks)[2])
 
 
 #print(StressCalcs("lift", 0.5, 1000).stress_along_span())
