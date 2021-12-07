@@ -8,12 +8,13 @@ import AeroLoads as Al
 import Shear_Calculations as Sc
 import moment_inerta as Mi
 import moment_diagram as Md
+import TwistDistribution_requires_editing as Tw
 
 sns.set()
 
 #Material Constants
-tens_yield_strength = 276 * 10**6
-ult_yield_strength = 310 * 10**6
+tens_yield_strength = 276e6
+ult_yield_strength = 310e6
 
 def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
@@ -56,8 +57,17 @@ class NormalStressCalcs:
         return span_position, self.stress_along_span()[stress_index, 1]
 
     def compres_failure(self):
-        yield_stress = 276e6
+        yield_stress = 276e6 # Might be incorrect still has to be checked later
         total_len = np.linspace(0, 51.73/2, self.num)
+        cond_1 = NormalStressCalcs("Combined", corner_points(total_len)[0], corner_points(total_len)[3]).find_stress_at_span(total_len)
+        cond_2 = NormalStressCalcs("Combined", corner_points(total_len)[1], corner_points(total_len)[-1]).find_stress_at_span(total_len)
+        cond_3 = NormalStressCalcs("Combined", corner_points(total_len)[2], corner_points(total_len)[-1]).find_stress_at_span(total_len)
+        cond_4 = NormalStressCalcs("Combined", corner_points(total_len)[2], corner_points(total_len)[3]).find_stress_at_span(total_len)
+        if cond_1.any() or cond_2.any() or cond_3.any() or cond_4.any() >= yield_stress:
+            ans = "Point(s) along the span have a higher stress than the yield stress"
+        else:
+            ans = "All is Good"
+        return ans
 
     def plotting_stress(self):
         if self.plane.lower == "Lift":
@@ -114,10 +124,13 @@ class BuckleWeb:
 
         return T_yz / (2 * A), T_xz / (2 * A)
 
-    def total_shear(self, ks):
-        total_yz = (self.shear_ave()[0] + self.shear_flow()[0]) * 0.1
+    def torque(self, z):
+        return Tw.torque_calc_vec(z) / (2 * cross_section_area(z))  # Signs have to be checked
+
+    def total_shear(self, ks=2):
+        total_yz = (self.shear_ave()[0] + self.shear_flow()[0] + self.torque(self.span)) * 0.1 
         comparison_yz = self.cri_buckle_web(ks)[0] - total_yz
-        total_xz = (self.shear_ave()[1] + self.shear_flow()[1]) * 0.1
+        total_xz = (self.shear_ave()[1] + self.shear_flow()[1] + self.torque(self.span)) * 0.1
         comparison_xz = self.cri_buckle_web(ks)[1] - total_xz
 
         if comparison_yz.any() or comparison_xz.any() > 0:
@@ -173,8 +186,7 @@ class MarginOfSafety:
 
 
 
-ks = 2
-print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear(ks)[2])
+print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[2])
 
 
 #print(StressCalcs("lift", 0.5, 1000).stress_along_span())
