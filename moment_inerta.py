@@ -20,6 +20,8 @@ def c(y):
     chord = 9.05 - (9.05 * (1 - 0.27)) / (51.73 / 2) * y
     return chord
 
+c_vec =  np.vectorize(c)
+
 
 
 # function coordinate top surface
@@ -213,8 +215,8 @@ def moment_inertia_yy_func(y, n_str_top, n_str_bot, width_str, area_str, centroi
 
     return neut_axis_x , tot_inert
 
-
-# vec_func = np.vectorize(moment_inertia_xx_func)
+#vectorisation
+xx_vec_func = np.vectorize(moment_inertia_xx_func)
 # span1 = np.linspace(0,25,50)
 #
 # plt.plot(span1, vec_func(span1, n_str_top=6, n_str_bot=4, width_str=0.1, area_str=0.5, centroid_x=0.03,

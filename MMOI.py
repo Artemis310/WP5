@@ -28,7 +28,7 @@ def L_stringer(height, lower_width, thickness):  # horizontal part of L is width
 
 
 #print("L-stringer: Ixx, Iyy, L_area, x_bar_L, y_bar_L = ", L_stringer(0.5, 0.25, 0.001))
-print("L - Ixx/tot_area, Iyy/tot_area", L_stringer(0.5, 0.25, 0.001)[0]/L_stringer(0.5, 0.25, 0.001)[2], L_stringer(0.5, 0.25, 0.001)[1]/L_stringer(0.5, 0.25, 0.001)[2])
+#print("L - Ixx/tot_area, Iyy/tot_area", L_stringer(0.5, 0.25, 0.001)[0]/L_stringer(0.5, 0.25, 0.001)[2], L_stringer(0.5, 0.25, 0.001)[1]/L_stringer(0.5, 0.25, 0.001)[2])
 
 def I_stringer(height, lower_width, upper_width, thickness):
     x_lower = 0
@@ -55,7 +55,7 @@ def I_stringer(height, lower_width, upper_width, thickness):
 
 
 #print("I-stringer: Ixx, Iyy, I_area, x_bar_I, y_bar_I = ", I_stringer(0.5, 0.25, 0.25, 0.001))
-print("I - Ixx/tot_area, Iyy/tot_area", I_stringer(0.5, 0.25, 0.25, 0.001)[0]/I_stringer(0.5, 0.25, 0.25, 0.001)[2], I_stringer(0.5, 0.25, 0.25, 0.001)[1]/I_stringer(0.5, 0.25, 0.25, 0.001)[2])
+#print("I - Ixx/tot_area, Iyy/tot_area", I_stringer(0.5, 0.25, 0.25, 0.001)[0]/I_stringer(0.5, 0.25, 0.25, 0.001)[2], I_stringer(0.5, 0.25, 0.25, 0.001)[1]/I_stringer(0.5, 0.25, 0.25, 0.001)[2])
 
 def S_stringer(height, lower_width, width_upper, thickness):
     x_lower = -lower_width / 2
@@ -85,7 +85,7 @@ def S_stringer(height, lower_width, width_upper, thickness):
 
 
 #print("S-stringer: Ixx, Iyy, S_area, x_bar_S, y_bar_S = ", S_stringer(0.5, 0.25/2, 0.25/2, 0.001))
-print("S - Ixx/tot_area, Iyy/tot_area", S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[0]/S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[2], S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[1]/S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[2])
+#print("S - Ixx/tot_area, Iyy/tot_area", S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[0]/S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[2], S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[1]/S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[2])
 
 def C_stringer(lower_width, height, upper_width, thickness):
     x_lower = lower_width / 2
@@ -115,7 +115,7 @@ def C_stringer(lower_width, height, upper_width, thickness):
 
 
 #print("C-stringer: Ixx, Iyy, C_area, x_bar_C, y_bar_C = ", C_stringer(0.25, 0.5, 0.25, 0.001))
-print("C - Ixx/tot_area, Iyy/tot_area", C_stringer(0.25, 0.5, 0.25, 0.001)[0]/C_stringer(0.25, 0.5, 0.25, 0.001)[2], C_stringer(0.25, 0.5, 0.25, 0.001)[1]/C_stringer(0.25, 0.5, 0.25, 0.001)[2])
+#print("C - Ixx/tot_area, Iyy/tot_area", C_stringer(0.25, 0.5, 0.25, 0.001)[0]/C_stringer(0.25, 0.5, 0.25, 0.001)[2], C_stringer(0.25, 0.5, 0.25, 0.001)[1]/C_stringer(0.25, 0.5, 0.25, 0.001)[2])
 
 def T_stringer(height, lower_width, thickness):
     x_lower = 0
@@ -142,7 +142,7 @@ def T_stringer(height, lower_width, thickness):
 
 
 ##print("T-stringer: Ixx, Iyy, T_area, x_bar_T, y_bar_T = ", T_stringer(0.5, 0.25, 0.001))
-print("T - Ixx/tot_area, Iyy/tot_area", T_stringer(0.5, 0.25, 0.001)[0]/T_stringer(0.5, 0.25, 0.001)[2], T_stringer(0.5, 0.25, 0.001)[1]/T_stringer(0.5, 0.25, 0.001)[2])
+#print("T - Ixx/tot_area, Iyy/tot_area", T_stringer(0.5, 0.25, 0.001)[0]/T_stringer(0.5, 0.25, 0.001)[2], T_stringer(0.5, 0.25, 0.001)[1]/T_stringer(0.5, 0.25, 0.001)[2])
 
 
 def J_stringer(height, lower_width, radius_top, thickness):  # J stringer with round head
@@ -176,7 +176,7 @@ def J_stringer(height, lower_width, radius_top, thickness):  # J stringer with r
 
 
 #print("J-stringer: Ixx, Iyy, J_area, x_bar_J, y_bar_J = ", J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001))
-print("J - Ixx/tot_area, Iyy/tot_area", J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[0]/J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[2], J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[1]/J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[2])
+#print("J - Ixx/tot_area, Iyy/tot_area", J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[0]/J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[2], J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[1]/J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[2])
 
 def Hat_stringer(heigth, lowerleft_width, lowerright_width, upper_width, thickness):
     x_lowerleft = -((1 / 2) * upper_width + (1 / 2) * lowerleft_width)
@@ -217,7 +217,7 @@ def Hat_stringer(heigth, lowerleft_width, lowerright_width, upper_width, thickne
 
 
 #print("Hat-stringer: Ixx, Iyy, Hat_area, x_bar_Hat, y_bar_Hat = ", Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001))
-print("Hat - Ixx/tot_area, Iyy/tot_area", Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[0]/Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[2], Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[1]/Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[2])
+#print("Hat - Ixx/tot_area, Iyy/tot_area", Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[0]/Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[2], Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[1]/Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[2])
 
 specific_Ixx_list = [L_stringer(0.5, 0.25, 0.001)[5], I_stringer(0.5, 0.25, 0.25, 0.001)[5], S_stringer(0.5, 0.25 / 2, 0.25 / 2, 0.001)[5], C_stringer(0.25, 0.5, 0.25, 0.001)[5], T_stringer(0.5, 0.25, 0.001)[5], J_stringer(0.5 - 0.25 / 4, 0.25, 0.25 / 4, 0.001)[5], Hat_stringer(0.5, 0.25 / 3, 0.25 / 3, 0.25 / 3, 0.001)[5]]
 specific_Ixx_list = [round(num, 4) for num in specific_Ixx_list]
@@ -240,6 +240,3 @@ sorted_spec_Ixx = sorted(dict_Ixx.items(), key=lambda x: x[1], reverse=True)
 sorted_spec_Iyy = sorted(dict_Iyy.items(), key=lambda x: x[1], reverse=True)
 
 
-
-print(sorted_spec_Ixx)
-print(sorted_spec_Iyy)
