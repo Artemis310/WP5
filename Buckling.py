@@ -11,13 +11,13 @@ import moment_diagram as Md
 import TwistDistribution_requires_editing as Tw
 
 sns.set()
-
 #Material Constants
 tens_yield_strength = 276e6
 ult_yield_strength = 310e6
 
 def cross_section_area(y):
     return ((Mi.z1(y)+Mi.z4(y))*Mi.x3(y))/2
+
 
 def corner_points(span_position):
     NA_z = Mi.moment_inertia_xx_func()[0]
@@ -195,17 +195,14 @@ class MarginOfSafety:
 
     def plot_mos(self):
         return None
-
-
-
         
 
 
-# print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear()[2])
+ks = 2
+print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear(ks)[2])
 
 
 #print(StressCalcs("lift", 0.5, 1000).stress_along_span())
 # stress = StressCalcs("Lift", 0.5, 0, 1000)
 
 # stress.plotting_stress()
-
