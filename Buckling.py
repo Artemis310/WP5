@@ -37,9 +37,6 @@ def corner_points(span_position):
 
 corner_points_vec = np.vectorize(corner_points)
 
-#Creating Arrays that define section properties
-
-
 
     
 class NormalStressCalcs:
