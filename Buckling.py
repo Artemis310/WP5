@@ -120,27 +120,27 @@ class BuckleWeb:
 
     def shear_flow(self):
         z = self.span
-        V_yz = Sc.TotalShearyz(z)
-        V_xz = Sc.TotalShearxz(z)
-        Ixx = 1 # Has to be inputted
-        Iyy = 1 # Has to be inputted
-        q = -V_yz / Ixx * 
+        T_yz = Sc.TotalShearyz(z)
+        T_xz = Sc.TotalShearxz(z)
+        A = cross_section_area(z)
 
-        return 
+        return T_yz / (2 * A), T_xz / (2 * A)
 
     def torque(self, z):
         return Tw.torque_calc_vec(z) / (2 * cross_section_area(z))  # Signs have to be checked
 
     def total_shear(self, ks=2):
-        total = (self.shear_ave()[0] + self.shear_flow()[0] + self.torque(self.span)) * 0.1 
-        comparison = self.cri_buckle_web(ks)[0] - total
+        total_yz = (self.shear_ave()[0] + self.shear_flow()[0] + self.torque(self.span)) * 0.1 
+        comparison_yz = self.cri_buckle_web(ks)[0] - total_yz
+        total_xz = (self.shear_ave()[1] + self.shear_flow()[1] + self.torque(self.span)) * 0.1
+        comparison_xz = self.cri_buckle_web(ks)[1] - total_xz
 
-        if comparison.any() > 0:
+        if comparison_yz.any() or comparison_xz.any() > 0:
             ans = "Point(s) along the span have a higher stress than the critical"
         else:
             ans = "All is Good"
 
-        return total, ans
+        return total_yz, total_xz, ans
 
     def plotting_shear(self):
         plt.plot(self.span, self.total_shear(1)[0], 'r-' , label="yz-Plane")
@@ -186,10 +186,14 @@ class MarginOfSafety:
         applied_stress_bottom_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
         applied_stress_bottom_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
 
+        max_stress_normal = max(applied_stress_top_right, applied_stress_top_left, applied_stress_bottom_right, applied_stress_bottom_left)
+
+        max_stress_shear = max(BuckleWeb.total_shear[0], BuckleWeb.total_shear[1])
+
         fail_comp_normal = min(BuckleSkin(self.span_position).crit_buckle_skin, BuckleColumn(self.span_position).crit_buckle_stringer)
         fail_comp_shear = BuckleWeb(self.span_position).cri_buckle_web
 
-        margin_of_safety_at_span = min(fail_comp_normal/NormalStressCalcs("Combined").find_stress_at_span(self.span_position), fail_comp_shear/1 )
+        margin_of_safety_at_span = min(fail_comp_normal/max_stress_normal, fail_comp_shear/max_stress_shear)
 
         return margin_of_safety_at_span
 
@@ -200,9 +204,3 @@ class MarginOfSafety:
 
 ks = 2
 print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear(ks)[2])
-
-
-#print(StressCalcs("lift", 0.5, 1000).stress_along_span())
-# stress = StressCalcs("Lift", 0.5, 0, 1000)
-
-# stress.plotting_stress()
