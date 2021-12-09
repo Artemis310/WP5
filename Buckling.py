@@ -186,14 +186,17 @@ class MarginOfSafety:
         applied_stress_bottom_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
         applied_stress_bottom_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
 
+        max_stress_normal = max(applied_stress_top_right, applied_stress_top_left, applied_stress_bottom_right, applied_stress_bottom_left)
+
         fail_comp_normal = min(BuckleSkin(self.span_position).crit_buckle_skin, BuckleColumn(self.span_position).crit_buckle_stringer)
         fail_comp_shear = BuckleWeb(self.span_position).cri_buckle_web
 
-        margin_of_safety_at_span = min(fail_comp_normal/NormalStressCalcs("Combined").find_stress_at_span(self.span_position), fail_comp_shear/1 )
+        margin_of_safety_at_span = min(fail_comp_normal/max_stress_normal, fail_comp_shear/BuckleWeb.total_shear[0])
 
         return margin_of_safety_at_span
 
     def plot_mos(self):
+        
         return None
         
 
