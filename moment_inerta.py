@@ -217,6 +217,7 @@ def moment_inertia_yy_func(y, n_str_top, n_str_bot, width_str, area_str, centroi
 
 #vectorisation
 xx_vec_func = np.vectorize(moment_inertia_xx_func)
+yy_vec_func = np.vectorize(moment_inertia_yy_func)
 # span1 = np.linspace(0,25,50)
 #
 # plt.plot(span1, vec_func(span1, n_str_top=6, n_str_bot=4, width_str=0.1, area_str=0.5, centroid_x=0.03,

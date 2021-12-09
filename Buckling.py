@@ -20,56 +20,48 @@ def cross_section_coordinates(span_pos):
     return None
     
 class NormalStressCalcs:
-    def __init__(self, plane = None, cross_section_dist_z = 0, cross_section_dist_x = 0, data_count = 1000, sigma_ult = 310 * 10 ** 6):
+    def __init__(self, plane = None, data_count = 1000, sigma_ult = 310 * 10 ** 6, span_min = 0 , span_max = 51.73/2):
         self.plane = plane
-        self.cross_section_dist_z = cross_section_dist_z
-        self.cross_section_dist_x = cross_section_dist_x
-        self.data_count =  data_count
+        self.data_count = data_count
+        self.span_locations = np.linspace(span_min, span_max, self.data_count)
+        self.inertia_xx = Mi.xx_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
+        self.inertia_yy = Mi.yy_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
+        self.cross_section_dist_z_max = Mi.y_coord1(Mi.c_spar1) * Mi.c_vec(self.span_locations) - self.inertia_xx[0]
+        self.cross_section_dist_x_max = Mi.c_spar2 * Mi.c_vec(self.span_locations) - self.inertia_yy[0]
         self.sigma_ult = sigma_ult
-        self.inertia_xx = None #will be defined within function
+
 
     
-    def stress_along_span(self, span_min = 0, span_max = 51.73/2 , tension_analy = False):
-        span_locations = np.linspace(span_min, span_max, self.data_count)
-        self.inertia_xx = Mi.xx_vec_func(span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
-
-        if tension_analy:
-            self.cross_section_dist_z = Mi.y_coord2(Mi.c_spar1) * Mi.c_vec(span_locations) - self.inertia_xx[0]
-            print(self.cross_section_dist_z)
-
+    def stress_along_span(self):
         if self.plane.lower == "Lift":
-            return np.column_stack((span_locations,(Md.moment_yz_vec(span_locations)*self.cross_section_dist_z) / self.inertia_xx[1])) #Mi.moment_inertia_xx_func(span_location)))
+            return np.column_stack((self.span_locations, (Md.moment_yz_vec(self.span_locations) * self.cross_section_dist_z_max) / self.inertia_xx[1])) #Mi.moment_inertia_xx_func(span_location)))
         elif self.plane.lower == "Drag":
-            return np.column_stack((span_locations, (Md.moment_zx_vec(span_locations)*self.cross_section_dist_x) / 1)) #Mi.moment_inertia_yy_func(span_location)))
+            return np.column_stack((self.span_locations, (Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / self.inertia_yy[1])) #Mi.moment_inertia_yy_func(span_location)))
         else:
-            return np.column_stack((span_locations, (Md.moment_yz_vec(span_locations)*self.cross_section_dist_z) / self.inertia_xx[1]
-            + (Md.moment_zx_vec(span_locations)*self.cross_section_dist_x) / 1))  #double check this equation, as well as the one above
+            second_tuple_val = (Md.moment_yz_vec(self.span_locations) * self.cross_section_dist_z_max) / self.inertia_xx[1] + (Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / self.inertia_yy[1]
+            return np.column_stack((self.span_locations, second_tuple_val))  #double check this equation, as well as the one above
 
     def find_stress_at_span(self, span_position):
         stress_index = np.where(self.stress_along_span()[:,0] <= span_position)[0][-1]
         return span_position, self.stress_along_span()[stress_index, 1], stress_index
 
-    def plotting_stress(self, tension_analy = False):
+    def plotting_stress(self):
         if self.plane.lower == "Lift":
             plot_label = "yz Plane"
         elif self.plane.lower == "Drag":
             plot_label = "xz Plane"
         else:
             plot_label = "Stress due to yz and xz plane bending"
-        plt.plot(self.stress_along_span(tension_analy= tension_analy)[:,0], self.stress_along_span(tension_analy= tension_analy)[:,1], 'k-' , label = plot_label)
+        plt.plot(self.stress_along_span()[:,0], self.stress_along_span()[:,1], 'k-' , label = plot_label)
         plt.xlabel("Span [m]")
-        plt.ylabel("Normal Stress [MPa]")
+        plt.ylabel("Normal Stress [Pa]")
         plt.grid(b = True, which = 'major')
         plt.legend()
         plt.show()
 
-    def tension_analysis(self, tension_analy = True):
-        if self.cross_section_dist_z > 0:
-            print("Please choose a point which is in tension, thus negative z value")
-            return None
-        else:
+    def tension_analysis(self):
             plt.axhline(self.sigma_ult)
-            self.plotting_stress(tension_analy= tension_analy)
+            self.plotting_stress()
 
 
 class BuckleWeb:
@@ -135,6 +127,7 @@ class BuckleWeb:
 
 
 
+
 class BuckleSkin:
     def __init__(self, span_location, kc ,E, t, stringer_count, stringer_width, p_ratio, plate_width):
         self.span_location = span_location
@@ -164,11 +157,12 @@ class BuckleColumn:
 
 
 
-sigma_max = NormalStressCalcs("Combined", -1, 1,)
+sigma_max = NormalStressCalcs("combined")
 
 sigma_max.tension_analysis()
-par = sigma_max.stress_along_span(tension_analy=True)
+print(sigma_max.stress_along_span()[0,1])
 
 # stress = StressCalcs("Lift", 0.5, 0, 1000)
 
 # stress.plotting_stress()
+
