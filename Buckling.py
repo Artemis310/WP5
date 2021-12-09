@@ -118,29 +118,21 @@ class BuckleWeb:
 
         return shear_stress_yz, shear_stress_xz
 
-    def shear_flow(self):
-        z = self.span
-        T_yz = Sc.TotalShearyz(z)
-        T_xz = Sc.TotalShearxz(z)
-        A = cross_section_area(z)
-
-        return T_yz / (2 * A), T_xz / (2 * A)
-
     def torque(self, z):
         return Tw.torque_calc_vec(z) / (2 * cross_section_area(z))  # Signs have to be checked
 
-    def total_shear(self, ks=2):
-        total_yz = (self.shear_ave()[0] + self.shear_flow()[0] + self.torque(self.span)) * 0.1 
-        comparison_yz = self.cri_buckle_web(ks)[0] - total_yz
-        total_xz = (self.shear_ave()[1] + self.shear_flow()[1] + self.torque(self.span)) * 0.1
-        comparison_xz = self.cri_buckle_web(ks)[1] - total_xz
+    def total_shear(self, ks):
+        total_front = self.shear_ave()[0] + self.torque(self.span)
+        total_rear = self.shear_ave()[1] + self.torque(self.span)
+        comparison_1 = self.cri_buckle_web(ks)[0] - total_front
+        comparison_2 = self.cri_buckle_web(ks)[1] - total_rear
 
-        if comparison_yz.any() or comparison_xz.any() > 0:
+        if comparison_1.any() or comparison_2.any() > 0:
             ans = "Point(s) along the span have a higher stress than the critical"
         else:
             ans = "All is Good"
 
-        return total_yz, total_xz, ans
+        return total_front, total_rear, ans
 
     def plotting_shear(self):
         plt.plot(self.span, self.total_shear(1)[0], 'r-' , label="yz-Plane")
