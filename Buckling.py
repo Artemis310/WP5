@@ -125,6 +125,37 @@ class BuckleWeb:
         plt.legend()
         plt.show()
 
+class Tension_analysis:
+    def __init__(self, data_count= 1000, sigma_ult=310 * 10 ** 6, span_min= 0, span_max= 51.73 / 2):
+        self.data_count = data_count
+        self.span_locations = np.linspace(span_min, span_max, self.data_count)
+        self.inertia_xx = Mi.xx_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1,0.002)
+        self.inertia_yy = Mi.yy_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
+        self.cross_section_dist_z_max = Mi.y_coord1(Mi.c_spar1) * Mi.c_vec(self.span_locations) - self.inertia_xx[0]
+        self.cross_section_dist_x_max = Mi.c_spar2 * Mi.c_vec(self.span_locations) - self.inertia_yy[0]
+        self.sigma_ult = sigma_ult
+
+    def stress_along_span(self):
+            second_tuple_val = (Md.moment_yz_vec(self.span_locations) * self.cross_section_dist_z_max) / \
+                               self.inertia_xx[1] + (
+                                           Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / \
+                               self.inertia_yy[1]
+            return np.column_stack((self.span_locations, second_tuple_val))
+
+
+    def plotting_stress(self):
+        plot_label = "Stress due to yz and xz plane bending"
+        plt.plot(self.stress_along_span()[:, 0], self.stress_along_span()[:, 1], 'k-', label=plot_label)
+        plt.xlabel("Span [m]")
+        plt.ylabel("Normal Stress [Pa]")
+        plt.grid(b=True, which='major')
+        plt.legend()
+        plt.show()
+
+    def tension_analysis(self):
+        plt.axhline(self.sigma_ult)
+        self.plotting_stress()
+
 
 
 
@@ -156,13 +187,7 @@ class BuckleColumn:
 
 
 
-
-sigma_max = NormalStressCalcs("combined")
+sigma_max = Tension_analysis()
 
 sigma_max.tension_analysis()
-print(sigma_max.stress_along_span()[0,1])
-
-# stress = StressCalcs("Lift", 0.5, 0, 1000)
-
-# stress.plotting_stress()
 
