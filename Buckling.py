@@ -10,6 +10,9 @@ import moment_inerta as Mi
 import moment_diagram as Md
 import TwistDistribution_requires_editing as Tw
 
+
+
+
 sns.set()
 #Material Constants
 tens_yield_strength = 276e6
@@ -33,6 +36,10 @@ def corner_points(span_position):
     return top_right_z, top_left_z, bottom_z, right_spar_x, left_spar_x
 
 corner_points_vec = np.vectorize(corner_points)
+
+#Creating Arrays that define section properties
+
+
 
     
 class NormalStressCalcs:
@@ -190,8 +197,12 @@ class MarginOfSafety:
         return margin_of_safety_at_span
 
     def plot_mos(self):
-        
-        return None
+        plt.plot(self.span_position, self.find_mos[0])
+        plt.xlabel("Span [m]")
+        plt.ylabel("Margin of Safety [-]")
+        plt.grid(b = True, which = 'major')
+        plt.legend()
+        plt.show()
         
 
 
