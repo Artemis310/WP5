@@ -190,6 +190,7 @@ class MarginOfSafety:
         return margin_of_safety_at_span
 
     def plot_mos(self):
+        
         return None
         
 
