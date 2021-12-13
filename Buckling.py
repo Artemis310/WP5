@@ -255,11 +255,3 @@ class MarginOfSafety:
 
 ks = 2
 #print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear(ks)[2])
-
-print(NormalStressCalcs("Combined", corner_points_vec(2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)[0],
-                        corner_points_vec(2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)[-1]
-                        ).stress_along_span(2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002))
-
-# top_right_z = corner_points_vec(2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
-
-# print(top_right_z)
