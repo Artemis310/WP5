@@ -246,4 +246,4 @@ class MarginOfSafety:
 ks = 2
 print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear(ks)[2])
 
-
+#this shouldnt appear in b
