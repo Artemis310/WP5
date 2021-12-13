@@ -22,5 +22,6 @@ def allowed_stress(crack_length, KI):
 
 max_allowed_stress = round(allowed_stress(0.005,29*10**6)/10**6,2)
 print(max_allowed_stress, "MPa/M^(1/2)")
+print(half_crack_length(143744402.95,29*10**6))
 
 #Change so Jasper can pull
