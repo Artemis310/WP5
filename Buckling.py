@@ -40,7 +40,6 @@ corner_points_vec = np.vectorize(corner_points)
 
     
 class NormalStressCalcs:
-<<<<<<< HEAD
     def __init__(self, plane = None, cross_section_dist_z = 0, cross_section_dist_x = 0):
         self.plane = plane
         self.cross_section_dist_z = cross_section_dist_z
@@ -50,18 +49,6 @@ class NormalStressCalcs:
     
     def stress_along_span(self, span_min = 0, span_max = 51.73/2):
         span_locations = np.linspace(span_min, span_max, self.num)
-=======
-    def __init__(self, plane = None, data_count = 1000, sigma_ult = 310 * 10 ** 6, span_min = 0 , span_max = 51.73/2):
-        self.plane = plane
-        self.data_count = data_count
-        self.span_locations = np.linspace(span_min, span_max, self.data_count)
-        self.inertia_xx = Mi.xx_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
-        self.inertia_yy = Mi.yy_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
-        self.cross_section_dist_z_max = Mi.y_coord1(Mi.c_spar1) * Mi.c_vec(self.span_locations) - self.inertia_xx[0]
-        self.cross_section_dist_x_max = Mi.c_spar2 * Mi.c_vec(self.span_locations) - self.inertia_yy[0]
-        self.sigma_ult = sigma_ult
-
->>>>>>> damien_branch
 
     
     def stress_along_span(self):
@@ -166,8 +153,6 @@ class BuckleWeb:
         plt.legend()
         plt.show()
 
-<<<<<<< HEAD
-=======
 class Tension_analysis:
     def __init__(self, data_count= 1000, sigma_ult=310 * 10 ** 6, span_min= 0, span_max= 51.73 / 2):
         self.data_count = data_count
@@ -202,7 +187,6 @@ class Tension_analysis:
 
 
 
->>>>>>> damien_branch
 class BuckleSkin:
     def __init__(self, span_location, kc ,E, t, stringer_count, stringer_width, p_ratio, plate_width):
         self.span_location = span_location
@@ -240,7 +224,6 @@ class MarginOfSafety:
 
         max_stress_normal = max(applied_stress_top_right, applied_stress_top_left, applied_stress_bottom_right, applied_stress_bottom_left)
 
-<<<<<<< HEAD
         max_stress_shear = max(BuckleWeb.total_shear[0], BuckleWeb.total_shear[1])
 
         fail_comp_normal = min(BuckleSkin(self.span_position).crit_buckle_skin, BuckleColumn(self.span_position).crit_buckle_stringer)
@@ -262,9 +245,5 @@ class MarginOfSafety:
 
 ks = 2
 print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear(ks)[2])
-=======
-sigma_max = Tension_analysis()
 
-sigma_max.tension_analysis()
 
->>>>>>> damien_branch
