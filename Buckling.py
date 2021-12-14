@@ -45,22 +45,34 @@ corner_points_vec = np.vectorize(corner_points)
 
     
 class NormalStressCalcs:
-    def __init__(self, plane = None, cross_section_dist_z = 0, cross_section_dist_x = 0):
+    def __init__(self, plane = None, n_str_top = 2, n_str_bot = 2, width_str = 0.02, 
+                          area_str = 6e-4, centroid_x = 0.01, centroid_y = 0.01,
+                          th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002, cross_section_dist_z = 0, cross_section_dist_x = 0):
         self.plane = plane
         self.cross_section_dist_z = cross_section_dist_z
         self.cross_section_dist_x = cross_section_dist_x
+        self.n_str_top = n_str_top
+        self.n_str_bot = n_str_bot
+        self.width_str = width_str
+        self.area_str = area_str
+        self.centroid_x = centroid_x
+        self.centroid_y = centroid_y
+        self.th_spar = th_spar
+        self.th_flang = th_flang
+        self.height_str = height_str
+        self.thick = thick
         self.E = 69e9
         self.num = 100
     
-    def stress_along_span(self, n_str_top, n_str_bot, width_str, 
-                          area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, span_min = 0, span_max = 51.73/2):
+    def stress_along_span(self, span_min = 0, span_max = 51.73/2):
         span_locations = np.linspace(span_min, span_max, self.num)
 
-        inertia_xx = Mi.xx_vec_func(span_locations, n_str_top, n_str_bot, width_str, area_str, centroid_x, 
-            centroid_y, th_spar, th_flang, height_str,thick)[1]
-        inertia_yy = Mi.yy_vec_func(span_locations, n_str_top, n_str_bot, width_str, area_str, centroid_x, 
-            centroid_y, th_spar, th_flang, height_str,thick)[1]
-
+        inertia_xx = Mi.xx_vec_func(span_locations, self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
+            self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick)[1]
+        inertia_yy = Mi.yy_vec_func(span_locations, self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
+            self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick)[1]
+        
+        
         if self.plane.lower == "Lift":
             return np.column_stack((span_locations, (Md.moment_yz_vec(span_locations) * self.cross_section_dist_z) / inertia_xx)) 
         elif self.plane.lower == "Drag":
@@ -104,6 +116,36 @@ class NormalStressCalcs:
     def tension_analysis(self):
             plt.axhline(self.sigma_ult)
             self.plotting_stress()
+    
+
+class MarginOfSafety:
+    def __init__(self, span_position):
+        self.span_position = span_position
+
+    def find_mos(self):
+        applied_stress_top_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[0], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
+        applied_stress_top_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[1], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
+        applied_stress_bottom_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
+        applied_stress_bottom_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
+
+        max_stress_normal = max(applied_stress_top_right, applied_stress_top_left, applied_stress_bottom_right, applied_stress_bottom_left)
+
+        max_stress_shear = max(BuckleWeb.total_shear[0], BuckleWeb.total_shear[1])
+
+        fail_comp_normal = min(BuckleSkin(self.span_position).crit_buckle_skin, BuckleColumn(self.span_position).crit_buckle_stringer)
+        fail_comp_shear = BuckleWeb(self.span_position).cri_buckle_web
+
+        margin_of_safety_at_span = min(fail_comp_normal/max_stress_normal, fail_comp_shear/max_stress_shear)
+
+        return margin_of_safety_at_span
+
+    def plot_mos(self):
+        plt.plot(self.span_position, self.find_mos[0])
+        plt.xlabel("Span [m]")
+        plt.ylabel("Margin of Safety [-]")
+        plt.grid(b = True, which = 'major')
+        plt.legend()
+        plt.show()
 
 
 class BuckleWeb:
@@ -138,7 +180,7 @@ class BuckleWeb:
 
     def total_shear(self, ks):
         total = np.sqrt(self.shear_ave()[0]**2 + self.shear_ave()[1]**2) + self.torque(self.span)
-        comparison = self.cri_buckle_web(ks)[0] - total
+        comparison = self.cri_buckle_web(ks)[0] - total * 1.5
 
         if np.any(comparison <= 0):
             ans = False # Point(s) along the span have a higher stress than the critical
@@ -171,7 +213,7 @@ class Tension_analysis:
                                self.inertia_xx[1] + (
                                            -Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / \
                                self.inertia_yy[1]
-            return np.column_stack((self.span_locations, second_tuple_val)), second_tuple_val
+            return np.column_stack((self.span_locations, second_tuple_val)), second_tuple_val * 1.5
 
 
     def plotting_stress(self):
@@ -188,11 +230,8 @@ class Tension_analysis:
         self.plotting_stress()
 
 
-
-
 class BuckleSkin:
-    def __init__(self, span_location, kc, t, stringer_count, stringer_width, plate_width):
-        self.span_location = span_location
+    def __init__(self, kc, t, stringer_count, stringer_width, plate_width):
         self.kc = kc
         self.E = 69e9
         self.p_ratio = 0.33
@@ -203,7 +242,7 @@ class BuckleSkin:
         self.b = plate_width/self.stringer_count - stringer_width
 
     def crit_buckle_skin(self):
-        return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.t))**2
+        return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.b))**2
 
 class BuckleColumn:
     def __init__(self, K, E, I, L, A):
@@ -215,38 +254,11 @@ class BuckleColumn:
 
     def crit_buckle_stringer(self):
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
-class MarginOfSafety:
-    def __init__(self, span_position):
-        self.span_position = span_position
-
-    def find_mos(self):
-        applied_stress_top_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[0], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
-        applied_stress_top_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[1], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
-        applied_stress_bottom_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
-        applied_stress_bottom_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
-
-        max_stress_normal = max(applied_stress_top_right, applied_stress_top_left, applied_stress_bottom_right, applied_stress_bottom_left)
-
-        max_stress_shear = max(BuckleWeb.total_shear[0], BuckleWeb.total_shear[1])
-
-        fail_comp_normal = min(BuckleSkin(self.span_position).crit_buckle_skin, BuckleColumn(self.span_position).crit_buckle_stringer)
-        fail_comp_shear = BuckleWeb(self.span_position).cri_buckle_web
-
-        margin_of_safety_at_span = min(fail_comp_normal/max_stress_normal, fail_comp_shear/max_stress_shear)
-
-        return margin_of_safety_at_span
-
-    def plot_mos(self):
-        plt.plot(self.span_position, self.find_mos[0])
-        plt.xlabel("Span [m]")
-        plt.ylabel("Margin of Safety [-]")
-        plt.grid(b = True, which = 'major')
-        plt.legend()
-        plt.show()
         
 class Design:
     def __init__(self, ks):
         self.ks = ks
+        self.num = 1000
     
     def buckle_check_web(self):
         i = 0.0001
@@ -254,15 +266,19 @@ class Design:
         while i < 0.05:
             if BuckleWeb(i).total_shear(self.ks)[1]:
                 design_options.append(i)
-                i +=  0.0001
             else:
-                i +=  0.0001
+                None
+            i +=  0.0001
         return design_options
     
     def buckle_check_skin(self):
-        i = 0.0001
-        BuckleSkin.crit_buckle_skin -Tension_analysis.stress_along_span()[1]
-
-
-ks = 2
-#print(Design(ks).buckle_check_web()[2])
+        t = 0.00001
+        design_options = []
+        var = Tension_analysis().stress_along_span()[1]
+        while t < 0.01:
+            if np.any(BuckleSkin(self.ks, t, 2, 2, 0.001).crit_buckle_skin() - var > 0):
+                design_options.append(t)
+            else:
+                None
+            t += 0.00001
+        return design_options
