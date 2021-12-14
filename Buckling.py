@@ -45,22 +45,34 @@ corner_points_vec = np.vectorize(corner_points)
 
     
 class NormalStressCalcs:
-    def __init__(self, plane = None, cross_section_dist_z = 0, cross_section_dist_x = 0):
+    def __init__(self, plane = None, n_str_top = 2, n_str_bot = 2, width_str = 0.02, 
+                          area_str = 6e-4, centroid_x = 0.01, centroid_y = 0.01,
+                          th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002, cross_section_dist_z = 0, cross_section_dist_x = 0):
         self.plane = plane
         self.cross_section_dist_z = cross_section_dist_z
         self.cross_section_dist_x = cross_section_dist_x
+        self.n_str_top = n_str_top
+        self.n_str_bot = n_str_bot
+        self.width_str = width_str
+        self.area_str = area_str
+        self.centroid_x = centroid_x
+        self.centroid_y = centroid_y
+        self.th_spar = th_spar
+        self.th_flang = th_flang
+        self.height_str = height_str
+        self.thick = thick
         self.E = 69e9
         self.num = 100
     
-    def stress_along_span(self, n_str_top, n_str_bot, width_str, 
-                          area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, span_min = 0, span_max = 51.73/2):
+    def stress_along_span(self, span_min = 0, span_max = 51.73/2):
         span_locations = np.linspace(span_min, span_max, self.num)
 
-        inertia_xx = Mi.xx_vec_func(span_locations, n_str_top, n_str_bot, width_str, area_str, centroid_x, 
-            centroid_y, th_spar, th_flang, height_str,thick)[1]
-        inertia_yy = Mi.yy_vec_func(span_locations, n_str_top, n_str_bot, width_str, area_str, centroid_x, 
-            centroid_y, th_spar, th_flang, height_str,thick)[1]
-
+        inertia_xx = Mi.xx_vec_func(span_locations, self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
+            self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick)[1]
+        inertia_yy = Mi.yy_vec_func(span_locations, self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
+            self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick)[1]
+        
+        
         if self.plane.lower == "Lift":
             return np.column_stack((span_locations, (Md.moment_yz_vec(span_locations) * self.cross_section_dist_z) / inertia_xx)) 
         elif self.plane.lower == "Drag":
@@ -260,6 +272,7 @@ class Design:
         return design_options
     
     def buckle_check_skin(self):
+<<<<<<< HEAD
         t = 0.00001
         design_options = []
         var = Tension_analysis().stress_along_span()[1]
@@ -272,6 +285,10 @@ class Design:
         return design_options
 
 
+=======
+        i = 0.0001
+        BuckleSkin.crit_buckle_skin +Tension_analysis.stress_along_span()[1]
+>>>>>>> 5fa53e25c45b93650647e2ea9a9b9f9136725138
 
 
 ks = 2
