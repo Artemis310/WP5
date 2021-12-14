@@ -163,13 +163,13 @@ class Tension_analysis:
         self.inertia_xx = Mi.xx_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
         self.inertia_yy = Mi.yy_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
         self.cross_section_dist_z_max = Mi.y_coord1(Mi.c_spar1) * Mi.c_vec(self.span_locations) - self.inertia_xx[0]
-        self.cross_section_dist_x_max = Mi.c_spar2 * Mi.c_vec(self.span_locations) - self.inertia_yy[0]
+        self.cross_section_dist_x_max = Mi.c_spar1 * Mi.c_vec(self.span_locations) - self.inertia_yy[0]
         self.sigma_ult = sigma_ult
 
     def stress_along_span(self):
             second_tuple_val = (Md.moment_yz_vec(self.span_locations) * self.cross_section_dist_z_max) / \
                                self.inertia_xx[1] + (
-                                           Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / \
+                                           -Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / \
                                self.inertia_yy[1]
             return np.column_stack((self.span_locations, second_tuple_val))
 
@@ -237,16 +237,12 @@ class MarginOfSafety:
         return margin_of_safety_at_span
 
     def plot_mos(self):
-<<<<<<< HEAD
-        return None
-=======
         plt.plot(self.span_position, self.find_mos[0])
         plt.xlabel("Span [m]")
         plt.ylabel("Margin of Safety [-]")
         plt.grid(b = True, which = 'major')
         plt.legend()
         plt.show()
->>>>>>> d3cbe036abc872befa407a76109bb12373904775
         
 class Design:
     def __init__(self, ks):
@@ -263,11 +259,9 @@ class Design:
                 i +=  0.0001
         return design_options
     
+    def buckle_check_skin(self):
+        
 
-<<<<<<< HEAD
-print(Design(2).buckle_check_web())
-=======
 
 ks = 2
-#print(BuckleWeb().plotting_shear(), BuckleWeb().total_shear(ks)[2])
->>>>>>> d3cbe036abc872befa407a76109bb12373904775
+print(Design().buckle_check_web(ks)[2])
