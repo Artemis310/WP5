@@ -84,7 +84,7 @@ class NormalStressCalcs:
 
     def find_stress_at_span(self, span_position):
         stress_index = np.where(self.stress_along_span()[:,0] <= span_position)[0][-1]
-        return span_position, self.stress_along_span()[stress_index, 1], stress_index
+        return span_position, self.stress_along_span()[stress_index, 1]
 
     def compres_failure(self):
         yield_stress = 276e6 # Might be incorrect still has to be checked later
@@ -93,10 +93,10 @@ class NormalStressCalcs:
         cond_2 = NormalStressCalcs("Combined", corner_points(total_len)[1], corner_points(total_len)[-1]).find_stress_at_span(total_len)
         cond_3 = NormalStressCalcs("Combined", corner_points(total_len)[2], corner_points(total_len)[-1]).find_stress_at_span(total_len)
         cond_4 = NormalStressCalcs("Combined", corner_points(total_len)[2], corner_points(total_len)[3]).find_stress_at_span(total_len)
-        if cond_1.any() or cond_2.any() or cond_3.any() or cond_4.any() >= yield_stress:
-            ans = "Point(s) along the span have a higher stress than the yield stress"
+        if np.any(cond_1 or cond_2 or cond_3 or cond_4>= yield_stress):
+            ans = False # "Point(s) along the span have a higher stress than the yield stress"
         else:
-            ans = "All is Good"
+            ans = True # "All is Good"
         return ans
 
     def plotting_stress(self):
@@ -245,9 +245,9 @@ class BuckleSkin:
         return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.b))**2
 
 class BuckleColumn:
-    def __init__(self, K, E, I, L, A):
+    def __init__(self, K, I, L, A):
         self.K = K
-        self.E = E
+        self.E = 69e9
         self.I = I
         self.L = L
         self.A = A
@@ -256,9 +256,18 @@ class BuckleColumn:
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
         
 class Design:
-    def __init__(self, ks):
+    def __init__(self, ks, kc, stringer_n, stringer_width, plate_width, K, I, L, A):
+        self.kc = kc
         self.ks = ks
+        self.stringer_n = stringer_n
+        self.stringer_width = stringer_width
+        self.plate_width = plate_width
+        self.K = K
+        self.I = I
+        self.L = L
+        self.A = A
         self.num = 1000
+        self.span = np.linspace(0, 51.73 / 2, num=self.num)
     
     def buckle_check_web(self):
         i = 0.0001
@@ -272,12 +281,23 @@ class Design:
         return design_options
     
     def buckle_check_skin(self):
-<<<<<<< HEAD
         t = 0.00001
         design_options = []
         var = Tension_analysis().stress_along_span()[1]
         while t < 0.01:
-            if np.any(BuckleSkin(self.ks, t, 2, 2, 0.001).crit_buckle_skin() - var > 0):
+            if np.any(BuckleSkin(self.kc, t, self.stringer_n, self.stringer_width, self.plate_width).crit_buckle_skin() - var > 0):
+                design_options.append(t)
+            else:
+                None
+            t += 0.00001
+        return design_options
+
+    
+    def buckle_check_column(self):
+        t = 0.00001
+        design_options = []
+        while t < 0.01:
+            if np.any(NormalStressCalcs().find_stress_at_span(self.span) - BuckleColumn(self.K, self.I, self.L, self.A).crit_buckle_stringer):  # add thickness somehow
                 design_options.append(t)
             else:
                 None
@@ -285,11 +305,6 @@ class Design:
         return design_options
 
 
-=======
-        i = 0.0001
-        BuckleSkin.crit_buckle_skin +Tension_analysis.stress_along_span()[1]
->>>>>>> 5fa53e25c45b93650647e2ea9a9b9f9136725138
-
-
+kc = 2
 ks = 2
-print(Design(ks).buckle_check_skin())
+print(Design(ks, kc).buckle_check_skin())
