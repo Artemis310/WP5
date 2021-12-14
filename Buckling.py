@@ -171,7 +171,7 @@ class Tension_analysis:
                                self.inertia_xx[1] + (
                                            -Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / \
                                self.inertia_yy[1]
-            return np.column_stack((self.span_locations, second_tuple_val))
+            return np.column_stack((self.span_locations, second_tuple_val)), second_tuple_val
 
 
     def plotting_stress(self):
@@ -191,14 +191,14 @@ class Tension_analysis:
 
 
 class BuckleSkin:
-    def __init__(self, span_location, kc ,E, t, stringer_count, stringer_width, p_ratio, plate_width):
+    def __init__(self, span_location, kc, t, stringer_count, stringer_width, plate_width):
         self.span_location = span_location
         self.kc = kc
-        self.E = E
+        self.E = 69e9
+        self.p_ratio = 0.33
         self.t = t
         self.stringer_count = stringer_count
         self.stringer_width = stringer_width
-        self.p_ratio = p_ratio
         self.plate_width = plate_width
         self.b = plate_width/self.stringer_count - stringer_width
 
@@ -260,7 +260,8 @@ class Design:
         return design_options
     
     def buckle_check_skin(self):
-        
+        i = 0.0001
+        BuckleSkin.crit_buckle_skin Tension_analysis.stress_along_span()[1]
 
 
 ks = 2
