@@ -117,21 +117,15 @@ class BuckleWeb:
         return Tw.torque_calc_vec(z) / (2 * cross_section_area(z))  # Signs have to be checked
 
     def total_shear(self, ks):
-        total_front = self.shear_ave()[0] + self.torque(self.span)
-        total_rear = self.shear_ave()[1] + self.torque(self.span)
-        comparison_1 = total_front - self.cri_buckle_web(ks)[0]
-        comparison_2 = total_rear - self.cri_buckle_web(ks)[1]
+        total = np.sqrt(self.shear_ave()[0]**2 + self.shear_ave()[1]**2) + self.torque(self.span)
+        comparison = self.cri_buckle_web(ks)[0] - total
 
-        if comparison_1.any() > 0:
-            ans1 = False # Point(s) along the span have a higher stress than the critical
+        if np.any(comparison <= 0):
+            ans = False # Point(s) along the span have a higher stress than the critical
         else:
-            ans1 = True # All is Good
-        if comparison_2.any() > 0:
-            ans2 = False # Point(s) along the span have a higher stress than the critical
-        else:
-            ans2 = True # All is Good
+            ans = True # All is Good
 
-        return total_front, total_rear, ans1, ans2, comparison_2[0]
+        return total, ans, comparison
 
     def plotting_shear(self):
         plt.plot(self.span, self.total_shear(1)[0], 'r-' , label="yz-Plane")
@@ -194,29 +188,17 @@ class MarginOfSafety:
 class Design:
     def __init__(self, ks):
         self.ks = ks
-        self.num = 1000
-
-    def thickness(self):
-        return np.linspace(0.0005, 0.5, num=self.num)
     
     def buckle_check_web(self):
-        np.where(BuckleWeb(self.thickness).total_shear(self.ks)[2] == True, self.thickness)
-        design_options = [np.zeros(self.num), np.zeros(self.num)]
-        for i in range(self.num):
-            if BuckleWeb(self.thickness(i)).total_shear(self.ks)[2]:
-                design_options[i][0] = self.thickness(i)
+        i = 0.0001
+        design_options = []
+        while i < 0.05:
+            if BuckleWeb(i).total_shear(self.ks)[1]:
+                design_options.append(i)
+                i +=  0.0001
             else:
-                None
-        for j in range(self.num):
-             if BuckleWeb(self.thickness(j)).total_shear(self.ks)[3]:
-                 design_options[j][1] = self.thickness(i)
-             else:
-                 None     
+                i +=  0.0001
         return design_options
-
-    def thickness_web_buckle(self):
-        return np.vectorize(self.buckle_check_web())
     
 
-Test = BuckleWeb(0.003)
-print(Test.torque()[-1])
+print(Design(2).buckle_check_web())
