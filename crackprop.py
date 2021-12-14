@@ -1,13 +1,17 @@
-#import Buckling as Bk
+import Buckling as Bk
 import numpy as np
 
 class DamageTolerance:
-    def __init__(self, K_IC, K_I, a = 5*10**(-3)):
-        self.K_IC = K_IC
-        self.K_I = K_I
-        self.a = a
+    def __init__(self):
+        self.K_IC = 29e6
+        self.K_I = self.K_IC
+        self.a = 5e-3
 
     def stress_allowed(self):
+<<<<<<< HEAD
+        return self.K_I/np.sqrt(np.pi*self
+        )
+=======
         return self.K_I/np.sqrt(np.pi*self.a)
 
 #Bk.BuckleWeb.total_shear
@@ -25,3 +29,4 @@ print(max_allowed_stress, "MPa/M^(1/2)")
 print(half_crack_length(143744402.95,29*10**6))
 
 #Change so Jasper can pull
+>>>>>>> 97ea59882281488d6c28f2c95218f5a4f0f1eab2

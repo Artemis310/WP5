@@ -3,9 +3,9 @@ import scipy as sp
 from scipy import interpolate
 from scipy import integrate
 import matplotlib.pyplot as plt
-import seaborn as sns
+import seaborn as sb
 
-sns.set()
+sb.set()
 class AeroLoads:
     def __init__(self, rho, V_inf, alpha, dy):
         self.rho = rho
