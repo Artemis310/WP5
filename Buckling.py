@@ -8,6 +8,7 @@ import AeroLoads as Al
 import Shear_Calculations as Sc
 import moment_inerta as Mi
 import moment_diagram as Md
+import MMOI as mo
 import TwistDistribution_requires_editing as Tw
 
 
@@ -256,16 +257,14 @@ class BuckleColumn:
         return (self.K * np.pi**2 * self.E * self.I) / (self.L**2 * self.A)
         
 class Design:
-    def __init__(self, ks, kc, stringer_n, stringer_width, plate_width, K, I, L, A):
+    def __init__(self, ks, kc, stringer_n, stringer_width, plate_width, K):
         self.kc = kc
         self.ks = ks
         self.stringer_n = stringer_n
         self.stringer_width = stringer_width
         self.plate_width = plate_width
         self.K = K
-        self.I = I
-        self.L = L
-        self.A = A
+        self.L = plate_width/self.stringer_n - stringer_width
         self.num = 1000
         self.span = np.linspace(0, 51.73 / 2, num=self.num)
     
@@ -290,7 +289,6 @@ class Design:
             else:
                 None
             t += 0.00001
-
         return design_options
 
     
@@ -298,7 +296,7 @@ class Design:
         t = 0.00001
         design_options = []
         while t < 0.01:
-            if np.any(NormalStressCalcs().find_stress_at_span(self.span) - BuckleColumn(self.K, self.I, self.L, self.A).crit_buckle_stringer):  # add thickness somehow
+            if np.any(NormalStressCalcs().find_stress_at_span(self.span) - BuckleColumn(self.K,  mo.C_stringer(0.25, 0.5, 0.25, t)[0], self.L, mo.C_stringer(0.25, 0.5, 0.25, t)[2]).crit_buckle_stringer):  # add thickness somehow
                 design_options.append(t)
             else:
                 None
@@ -308,6 +306,9 @@ class Design:
 
 kc = 2
 ks = 2
-#print(Design(ks, kc, stringer_n, stringer_width, plate_width, K, I, L, A).buckle_check_skin())
-
-
+<<<<<<< HEAD
+print(Design(ks, kc).buckle_check_skin())
+=======
+K = 4
+print(Design(ks, kc, 4, 5, 3, K).buckle_check_skin())
+>>>>>>> b3280d2d3f69e2bf3aec6b08b452b025286167ba

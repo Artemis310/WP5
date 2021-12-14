@@ -20,7 +20,7 @@ str_area = (str_height + str_width) * str_thick # Stringer area [m^2]
 flg_th = 1 # Flange thickness [m]
 spr_th = 1 # Spar thickness [m]
 
-centroid_x, centroid_y = 1,1 # Cross section centroids [m]
+centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids [m]
 
 
 ## Design configuring
@@ -44,6 +44,7 @@ bot_width_bay_str = np.zeros((100, n_bays)) # Same as line above but for bottom 
 
 
 # This loop generates the distances between the stringers in each bay
+
 for i in range(n_bays):
     POI = Bk.corner_points(top_str_bay_count[i], bot_str_bay_count[i], str_width, str_area, centroid_x, centroid_y, spr_th, flg_th,
                                         str_height, str_thick, rib_loc[i], rib_loc[i+1])
@@ -54,4 +55,5 @@ for i in range(n_bays):
     top_width_bay_str[:,i] = (bay_width-top_str_bay_count[i]*str_width)/(top_str_bay_count[i] - 1)
     bot_width_bay_str[:,i] = (bay_width-bot_str_bay_count[i]*str_width)/(bot_str_bay_count[i] - 1)
 
-#Checking failure in each bay
+# Checking failure in each bay
+
