@@ -41,7 +41,7 @@ def DistributedWingWeight():
 D_fit = np.polyfit(aerostandard.total_dist()[0], aerostandard.total_dist()[2], 4)
 
 def Drag(z):
-    return (D_fit[0] * z ** 4) + (D_fit[1] * z ** 3) + (D_fit[2] * z ** 2) + (D_fit[3] * z) + (D_fit[4])
+    return (2.5**2)*((D_fit[0] * z ** 4) + (D_fit[1] * z ** 3) + (D_fit[2] * z ** 2) + (D_fit[3] * z) + (D_fit[4]))
 
 def drag_centre_func(z):
     return ((D_fit[0] * z ** 4) + (D_fit[1] * z ** 3) + (D_fit[2] * z ** 2) + (D_fit[3] * z) + (D_fit[4])) * z
