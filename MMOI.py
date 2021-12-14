@@ -141,7 +141,7 @@ def T_stringer(height, lower_width, thickness):
     return Ixx, Iyy, tot_area, x_bar, y_bar, specific_Ixx, specific_Iyy
 
 
-#print("T-stringer: Ixx, Iyy, T_area, x_bar_T, y_bar_T = ", T_stringer(0.5, 0.25, 0.001))
+##print("T-stringer: Ixx, Iyy, T_area, x_bar_T, y_bar_T = ", T_stringer(0.5, 0.25, 0.001))
 #print("T - Ixx/tot_area, Iyy/tot_area", T_stringer(0.5, 0.25, 0.001)[0]/T_stringer(0.5, 0.25, 0.001)[2], T_stringer(0.5, 0.25, 0.001)[1]/T_stringer(0.5, 0.25, 0.001)[2])
 
 
@@ -240,6 +240,3 @@ sorted_spec_Ixx = sorted(dict_Ixx.items(), key=lambda x: x[1], reverse=True)
 sorted_spec_Iyy = sorted(dict_Iyy.items(), key=lambda x: x[1], reverse=True)
 
 
-
-#print(sorted_spec_Ixx)
-#print(sorted_spec_Iyy)
