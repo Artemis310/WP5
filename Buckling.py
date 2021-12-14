@@ -261,8 +261,8 @@ class Design:
     
     def buckle_check_skin(self):
         i = 0.0001
-        BuckleSkin.crit_buckle_skin Tension_analysis.stress_along_span()[1]
+        BuckleSkin.crit_buckle_skin -Tension_analysis.stress_along_span()[1]
 
 
 ks = 2
-print(Design().buckle_check_web(ks)[2])
+#print(Design(ks).buckle_check_web()[2])
