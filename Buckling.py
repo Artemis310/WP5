@@ -25,7 +25,7 @@ def cross_section_area(y):
 
 def corner_points(n_str_top, n_str_bot, width_str, 
                           area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, span_min = 0, span_max = 51.73/2):
-    span_position = np.linspace(span_min, span_max, 100)
+    span_position = np.linspace(span_min, span_max, 1000)
     
     NA_z = Mi.xx_vec_func(span_position, n_str_top, n_str_bot, width_str, 
                           area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick)[0]
@@ -63,7 +63,7 @@ class NormalStressCalcs:
         self.height_str = height_str
         self.thick = thick
         self.E = 69e9
-        self.num = 100
+        self.num = 1000
     
     def stress_along_span(self, span_min = 0, span_max = 51.73/2):
         span_locations = np.linspace(span_min, span_max, self.num)
@@ -306,9 +306,5 @@ class Design:
 
 kc = 2
 ks = 2
-<<<<<<< HEAD
-print(Design(ks, kc).buckle_check_skin())
-=======
 K = 4
 print(Design(ks, kc, 4, 5, 3, K).buckle_check_skin())
->>>>>>> b3280d2d3f69e2bf3aec6b08b452b025286167ba
