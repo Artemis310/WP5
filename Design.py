@@ -25,22 +25,17 @@ centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids
 
 ## Design configuring
 
-n_bays = 2 # Set number of bays, equally spaced
-len_bay = len_wbox / n_bays # Length of each bay [m]
+rib_loc = np.array([0,8,len_wbox]) # Set locations of the ribs
 
-rib_loc = np.array([0,8,len_wbox]) # Set locations of the ribs, make sure that len(rib_loc) = n_bays - 1
-
-# This loop generates an array of all the rib locations
-# for i in range(n_bays):
-#     rib_loc = np.append(rib_loc, len_bay * (i+1))
+n_bays = len(rib_loc) - 1 # Number of bays
     
 print(rib_loc)
 top_str_bay_count = np.array([4,4]) # Number of stringers in each bay, make sure len(top_Str_bay) = n_bays
 bot_str_bay_count = np.array([4,4]) # Number of stringers in each bay, make sure len(bot_str_bay) = n_bays
 
 
-top_width_bay_str = np.zeros((100, n_bays)) # Distances between top stringers in each bay, note each column is one bay
-bot_width_bay_str = np.zeros((100, n_bays)) # Same as line above but for bottom stringers
+top_width_bay_str = np.zeros((1000, n_bays)) # Distances between top stringers in each bay, note each column is one bay
+bot_width_bay_str = np.zeros((1000, n_bays)) # Same as line above but for bottom stringers
 
 
 # This loop generates the distances between the stringers in each bay
@@ -55,5 +50,28 @@ for i in range(n_bays):
     top_width_bay_str[:,i] = (bay_width-top_str_bay_count[i]*str_width)/(top_str_bay_count[i] - 1)
     bot_width_bay_str[:,i] = (bay_width-bot_str_bay_count[i]*str_width)/(bot_str_bay_count[i] - 1)
 
-# Checking failure in each bay
+# Determination of kc ratios for top and bottom plates
 
+max_plate_ratio_top = []
+max_plate_ratio_bot = []
+
+for i in range(n_bays):
+    max_plate_ratio_top.append((rib_loc[i+1] - rib_loc[i])/min(top_width_bay_str[:,i]))
+    max_plate_ratio_bot.append((rib_loc[i+1] - rib_loc[i])/min(bot_width_bay_str[:,i]))
+
+print(f"Max a/b ratio of top plate per bay: {max_plate_ratio_top}")
+print(f"Max a/b ratio of bot plate per bay: {max_plate_ratio_bot}")
+
+kc_top_bay = np.array([]) # Input kc values for each bay, make sure len(kc_top_bay) = n_bays
+kc_bot_bay = np.array([]) # Same as line above but for bottom bay
+
+# Determination of ks ratios for website
+
+max_plate_ratio_web = []
+
+for i in range(n_bays):
+    
+
+
+# Checking failure in each bay
+    
