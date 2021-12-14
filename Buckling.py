@@ -290,7 +290,7 @@ class Design:
             else:
                 None
             t += 0.00001
-<<<<<<< HEAD
+
         return design_options
 
     
@@ -308,7 +308,6 @@ class Design:
 
 kc = 2
 ks = 2
-print(Design(ks, kc).buckle_check_skin())
-=======
-        return design_options
->>>>>>> a1b7d8aa1948807c97735d965f419e5e7dfd0549
+#print(Design(ks, kc, stringer_n, stringer_width, plate_width, K, I, L, A).buckle_check_skin())
+
+
