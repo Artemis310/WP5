@@ -162,10 +162,10 @@ def J_stringer(height, lower_width, radius_top, thickness):  # J stringer with r
 
     tot_area = lower_width * thickness + height * thickness + math.pi * radius_top * thickness
 
-    Ixx = (thickness * height ** 3) / 12 + (1 / 8) * math.pi * radius_top ** 4 + lower_width * thickness * (
+    Ixx = (thickness * height ** 3) / 12 + (1 / 2) * math.pi * radius_top ** 3*thickness + lower_width * thickness * (
             y_bar - y_lower) ** 2 + height * thickness * (
                   y_bar - y_height) ** 2 + pi * radius_top * thickness * (y_bar - y_round) ** 2
-    Iyy = (thickness * lower_width ** 3) / 12 + (1 / 8) * math.pi * radius_top ** 4 + lower_width * thickness * (
+    Iyy = (thickness * lower_width ** 3) / 12 + (1 / 2) * math.pi * radius_top ** 3*thickness + lower_width * thickness * (
             x_bar - x_lower) ** 2 + height * thickness * (
                   x_bar - x_height) ** 2 + math.pi * radius_top * thickness * (x_bar - x_round) ** 2
 
@@ -239,4 +239,6 @@ dict_ratio = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "S": specific_
 sorted_spec_Ixx = sorted(dict_Ixx.items(), key=lambda x: x[1], reverse=True)
 sorted_spec_Iyy = sorted(dict_Iyy.items(), key=lambda x: x[1], reverse=True)
 
+#print(sorted_spec_Ixx)
+#print(sorted_spec_Iyy)
 
