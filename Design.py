@@ -28,8 +28,7 @@ centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids
 rib_loc = np.array([0,8,len_wbox]) # Set locations of the ribs
 
 n_bays = len(rib_loc) - 1 # Number of bays
-    
-print(rib_loc)
+
 top_str_bay_count = np.array([4,4]) # Number of stringers in each bay, make sure len(top_Str_bay) = n_bays
 bot_str_bay_count = np.array([4,4]) # Number of stringers in each bay, make sure len(bot_str_bay) = n_bays
 
@@ -69,9 +68,33 @@ kc_bot_bay = np.array([]) # Same as line above but for bottom bay
 
 max_plate_ratio_web = []
 
-for i in range(n_bays):
-    
+'''for i in range(n_bays):
+    print("bruh")'''
 
 
 # Checking failure in each bay
+
+# Cycle throug each bay and check all failure criteria. If any fails, abort and print("fails"). Also, for each bay, calculate
+# and plot Mos. failure criteria: buckleweb, buckleskin, bucklecolumn, crackprop, plate tension.
+
+for i in range(n_bays):
+    # Multiple use vairables for each bay
+    span_locations = np.linspace(rib_loc[i], rib_loc[i+1], 1000)
+    span_min = rib_loc[i]
+    span_max = rib_loc[i+1]
+    
+    corner_coords = Bk.corner_points_vec(top_str_bay_count[i], bot_str_bay_count[i],
+                                            str_width, str_area, centroid_x, centroid_y,
+                                            spr_th, flg_th, str_height, str_thick, span_min, span_max)
+    
+    
+    stress_along_bay = Bk.NormalStressCalcs("Combined", top_str_bay_count[i], bot_str_bay_count[i],
+                                            str_width, str_area, centroid_x, centroid_y,
+                                            spr_th, flg_th, str_height, str_thick, corner_coords[0], corner_coords[-2]).stress_along_span(
+                                            span_min, span_max)
+    
+    # Buckle check: Skin
+    
+    
+    
     
