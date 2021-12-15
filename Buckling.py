@@ -217,7 +217,7 @@ class Tension_analysis:
             return np.column_stack((self.span_locations, second_tuple_val)), second_tuple_val * 1.5
         
     def check_for_failure(self):
-        if not np.any(self.stress_along_span[-1] >= self.sigma_ult):
+        if not np.any(self.stress_along_span()[-1] >= self.sigma_ult):
             return True
         else:
             return False
