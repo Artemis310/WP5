@@ -120,10 +120,10 @@ class NormalStressCalcs:
     
 
 class MarginOfSafety:
-    def __init__(self, span_position, n_str_top = 2, n_str_bot = 2, width_str = 0.02, 
+    def __init__(self, n_str_top = 2, n_str_bot = 2, width_str = 0.02, 
                           area_str = 6e-4, centroid_x = 0.01, centroid_y = 0.01,
-                          th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002):
-        self.span_position = span_position
+                          th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002, span_min = 0, span_max = 51.73 / 2):
+        self.span_position = np.linspace(span_min, span_max, 1000)
         self.n_str_top = n_str_top
         self.n_str_bot = n_str_bot
         self.width_str = width_str
