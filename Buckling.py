@@ -124,7 +124,7 @@ class MarginOfSafety:
                           area_str = 6e-4, centroid_x = 0.01, centroid_y = 0.01,
                           th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002, span_min = 0, span_max = 51.73 / 2, 
                           str_k = 1, str_len = 1, str_i = 1, skn_kc = 1, skn_t = 1, skn_b = 1):
-        self.span_position = np.linspace(span_min, span_max, 1000)
+        self.span_position = 10
         self.n_str_top = n_str_top
         self.n_str_bot = n_str_bot
         self.width_str = width_str
@@ -372,4 +372,6 @@ K = 4
 #print(BuckleSkin(1,1,1).crit_buckle_skin())
 
 
-print()
+print(BuckleSkin(1,1,1).crit_buckle_skin())
+
+print(BuckleColumn(1,1,1,1).crit_buckle_stringer())
