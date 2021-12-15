@@ -237,10 +237,10 @@ class BuckleSkin:
         self.E = 69e9
         self.p_ratio = 0.33
         self.t = t
+        self.b = b
         # self.stringer_count = stringer_count
         # self.stringer_width = stringer_width
         # self.plate_width = plate_width
-        self.b = b
 
     def crit_buckle_skin(self):
         return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.b))**2
@@ -310,3 +310,4 @@ kc = 2
 ks = 2
 K = 4
 #print(Design(ks, kc, 4, 5, 3, K).buckle_check_skin())
+print(BuckleSkin(1,1,1).crit_buckle_skin())
