@@ -167,8 +167,8 @@ class MarginOfSafety:
                                 applied_stress_bottom_right, applied_stress_bottom_left)
         
         
-        fail_comp_normal = min(BuckleSkin(self.skn_kc, self.skn_t, self.skn_b).crit_buckle_skin, 
-                               BuckleColumn(self.str_k, self.str_i, self.str_len, self.area_str).crit_buckle_stringer)
+        fail_comp_normal = min(BuckleSkin(self.skn_kc, self.skn_t, self.skn_b).crit_buckle_skin(), 
+                               BuckleColumn(self.str_k, self.str_i, self.str_len, self.area_str).crit_buckle_stringer())
 
 
         bckl_web = BuckleWeb(self.thick, self.span_min, self.span_max)
