@@ -122,7 +122,8 @@ class NormalStressCalcs:
 class MarginOfSafety:
     def __init__(self, n_str_top = 2, n_str_bot = 2, width_str = 0.02, 
                           area_str = 6e-4, centroid_x = 0.01, centroid_y = 0.01,
-                          th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002, span_min = 0, span_max = 51.73 / 2):
+                          th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002, span_min = 0, span_max = 51.73 / 2, 
+                          str_k = 1, str_len = 1, str_i = 1, skn_kc = 1, skn_t = 1, skn_b = 1):
         self.span_position = np.linspace(span_min, span_max, 1000)
         self.n_str_top = n_str_top
         self.n_str_bot = n_str_bot
@@ -136,11 +137,18 @@ class MarginOfSafety:
         self.thick = thick
         self.span_min = span_min
         self.span_max = span_max
+        self.str_k = str_k
+        self.str_len = str_len
+        self.str_i = str_i
+        self.skn_kc = skn_kc
+        self.skn_t = skn_t
+        self.skn_b = skn_b
         
         self.corner_coords = corner_points_vec(n_str_top, n_str_bot, width_str, 
                           area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, self.span_min, self.span_max)
 
     def find_mos(self):
+        
         applied_stress_top_right = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
             self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick, 
             self.corner_coords[0], self.corner_coords[3]).find_stress_at_span(self.span_position)[1]
@@ -157,11 +165,15 @@ class MarginOfSafety:
         
         max_stress_normal = max(applied_stress_top_right, applied_stress_top_left,
                                 applied_stress_bottom_right, applied_stress_bottom_left)
+        
+        
+        fail_comp_normal = min(BuckleSkin(self.skn_kc, self.skn_t, self.skn_b).crit_buckle_skin, 
+                               BuckleColumn(self.str_k, self.str_i, self.str_len, self.area_str).crit_buckle_stringer)
 
-        max_stress_shear = max(BuckleWeb.total_shear[0], BuckleWeb.total_shear[1])
 
-        fail_comp_normal = min(BuckleSkin(self.span_position).crit_buckle_skin, BuckleColumn(self.span_position).crit_buckle_stringer)
-        fail_comp_shear = BuckleWeb(self.span_position).cri_buckle_web
+        bckl_web = BuckleWeb(self.thick, self.span_min, self.span_max)
+        max_stress_shear = max(bckl_web.total_shear()[0], bckl_web.total_shear()[1])
+        fail_comp_shear = bckl_web.cri_buckle_web()
 
         margin_of_safety_at_span = min(fail_comp_normal/max_stress_normal, fail_comp_shear/max_stress_shear)
 
