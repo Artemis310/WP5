@@ -149,7 +149,8 @@ class MarginOfSafety:
             self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick, 
             corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
 
-        max_stress_normal = max(applied_stress_top_right, applied_stress_top_left, applied_stress_bottom_right, applied_stress_bottom_left)
+        max_stress_normal = max(max(applied_stress_top_right), max(applied_stress_top_left),
+                                max(applied_stress_bottom_right), max(applied_stress_bottom_left))
 
         max_stress_shear = max(BuckleWeb.total_shear[0], BuckleWeb.total_shear[1])
 
@@ -159,11 +160,9 @@ class MarginOfSafety:
         margin_of_safety_at_span = min(fail_comp_normal/max_stress_normal, fail_comp_shear/max_stress_shear)
 
         return margin_of_safety_at_span
-    
-    find_mos_vec = np.vectorize(find_mos)
 
     def plot_mos(self):
-        plt.plot(self.span_position, self.find_mos_vec()[0])
+        plt.plot(self.span_position, self.find_mos()[0])
         plt.xlabel("Span [m]")
         plt.ylabel("Margin of Safety [-]")
         plt.grid(b = True, which = 'major')
