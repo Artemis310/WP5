@@ -25,17 +25,17 @@ def allowed_stress(crack_length, KI):
 
 max_allowed_stress = allowed_stress(0.005,29*10**6)
 
-print(f"max allowed stress = {max_allowed_stress/10e6:.2f} MPa")
+#print(f"max allowed stress = {max_allowed_stress/10e6:.2f} MPa")
 
 span_stress_col = bk.Tension_analysis().stress_along_span()[0]
 
-print(f"Actual tension stress at root = {span_stress_col[0,1]/10e6:.2f} MPa")
+#print(f"Actual tension stress at root = {span_stress_col[0,1]/10e6:.2f} MPa")
 
-if span_stress_col[0,1] > max_allowed_stress:
-    print("Crack prop req not met!")
+# if span_stress_col[0,1] > max_allowed_stress:
+#     print("Crack prop req not met!")
 
-else:
-    print("You're all set!")
+# else:
+#     print("You're all set!")
 
 def check_crackprop_fail():
     if not span_stress_col[0,1] > max_allowed_stress:
