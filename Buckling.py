@@ -371,10 +371,3 @@ ks = 2
 K = 4
 #print(Design(ks, kc, 4, 5, 3, K).buckle_check_skin())
 #print(BuckleSkin(1,1,1).crit_buckle_skin())
-
-
-print(BuckleSkin(1,1,1).crit_buckle_skin())
-
-print(BuckleColumn(1,1,1,1).crit_buckle_stringer())
-
-print(MarginOfSafety().find_mos())
