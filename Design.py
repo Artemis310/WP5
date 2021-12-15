@@ -80,10 +80,17 @@ ks_per_bay = np.array([1,1]) # Input ks values for each bay, make sure len(kc_to
 
 k_str = 1 # Stringer buckling coefficient
 
-# Checking failure in each bay
+# Checking design for failure
 
+
+# Crack propagation check
+if Cp.check_crackprop_fail():
+    print(f"BAY {i+1}, Crack Propagation design {Cl.Fore.GREEN} SUFFICIENT {Cl.Style.RESET_ALL}: \u2714")
+else:
+    print(f"BAY {i+1}, Crack Propagation design {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")
+    
 # Cycle throug each bay and check all failure criteria. If any fails, abort and print("fails"). Also, for each bay, calculate
-# and plot Mos. failure criteria: buckleweb, buckleskin, bucklecolumn, crackprop, plate tension.
+# and plot Mos. failure criteria: buckleweb, buckleskin, bucklecolumn, plate tension.
 
 for i in range(n_bays):
     # Multiple use vairables for each bay
@@ -143,9 +150,13 @@ for i in range(n_bays):
     else:
         print(f"BAY {i+1}, Top Skin thickness (Tension) {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")
         
-    # Crack propagation check
-    if Cp.check_crackprop_fail():
-        print(f"BAY {i+1}, Crack Propagation design {Cl.Fore.GREEN} SUFFICIENT {Cl.Style.RESET_ALL}: \u2714")
-    else:
-        print(f"BAY {i+1}, Crack Propagation design {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")
-        
+    # Margin of Safety plot, not including crack propagation    
+    
+    mos = Bk.MarginOfSafety(top_str_bay_count[i], bot_str_bay_count[i],
+                                            str_width, str_area, centroid_x, centroid_y,
+                                            spr_th, flg_th, str_height, str_thick)
+    
+    span_values_plot = np.linspace(span_min, span_max, 1000)
+    plt.plot(span_values_plot, mos.plot_mos())
+    
+plt.show()

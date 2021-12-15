@@ -163,7 +163,7 @@ class MarginOfSafety:
     find_mos_vec = np.vectorize(find_mos)
 
     def plot_mos(self):
-        plt.plot(self.span_position, self.find_mos_vec[0])
+        plt.plot(self.span_position, self.find_mos_vec()[0])
         plt.xlabel("Span [m]")
         plt.ylabel("Margin of Safety [-]")
         plt.grid(b = True, which = 'major')
