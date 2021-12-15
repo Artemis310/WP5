@@ -134,20 +134,23 @@ class MarginOfSafety:
         self.th_flang = th_flang
         self.height_str = height_str
         self.thick = thick
+        
+        self.corner_coords = corner_points_vec(self.span_position, n_str_top, n_str_bot, width_str, 
+                          area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, span_min = 0, span_max = 51.73/2)
 
     def find_mos(self):
         applied_stress_top_right = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
             self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick, 
-            corner_points_vec(self.span_position)[0], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
+            self.corner_coords[0], self.corner_coords[3]).find_stress_at_span(self.span_position)
         applied_stress_top_left = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
             self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick,
-            corner_points_vec(self.span_position)[1], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
+            self.corner_coords[1], self.corner_coords[-1]).find_stress_at_span(self.span_position)
         applied_stress_bottom_left = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
             self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick, 
-            corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
+            self.corner_coords[2], self.corner_coords[-1]).find_stress_at_span(self.span_position)
         applied_stress_bottom_right = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
             self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick, 
-            corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
+            self.corner_coords[2], self.corner_coords[3]).find_stress_at_span(self.span_position)
 
         max_stress_normal = max(max(applied_stress_top_right), max(applied_stress_top_left),
                                 max(applied_stress_bottom_right), max(applied_stress_bottom_left))
