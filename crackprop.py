@@ -19,7 +19,7 @@ import seaborn as sns
 #     total_crack_length = crack_length*2
 #     return total_crack_length
 
-def allowed_stress(crack_length, KI):
+'''def allowed_stress(crack_length, KI):
     max_allowed_tension_stress = KI/((np.pi*crack_length)**(1/2))
     return max_allowed_tension_stress
 
@@ -35,7 +35,7 @@ if span_stress_col[0,1] > max_allowed_stress:
     print("Crack prop req not met!")
 
 else:
-    print("You're all set!")
+    print("You're all set!")'''
 
 #location = np.where(span_stress_col[:,1] > 1e6)
 

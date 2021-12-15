@@ -150,12 +150,12 @@ class MarginOfSafety:
 
 
 class BuckleWeb:
-    def __init__(self, t):
+    def __init__(self, t, span_min = 0, span_max = 51.73 / 2):
         self.t = t
         self.E = 69e9
         self.p_ratio = 0.33
         self.num = 1000
-        self.span = np.linspace(0, 51.73 / 2, num=self.num)
+        self.span = np.linspace(span_min, span_max, num=self.num)
         self.c_spar1 = Mi.c_spar1
         self.c_spar2 = Mi.c_spar2
         self.hf = np.linspace(Mi.t_c_spar1 * self.c_spar1 * Mi.c(0), Mi.t_c_spar1 * self.c_spar1 * Mi.c(self.span[-1]), num=self.num)
@@ -232,18 +232,20 @@ class Tension_analysis:
 
 
 class BuckleSkin:
-    def __init__(self, kc, t, stringer_count, stringer_width, plate_width):
+    def __init__(self, kc, t, b): #stringer_count, stringer_width, plate_width)
         self.kc = kc
         self.E = 69e9
         self.p_ratio = 0.33
         self.t = t
-        self.stringer_count = stringer_count
-        self.stringer_width = stringer_width
-        self.plate_width = plate_width
-        self.b = plate_width/self.stringer_count - stringer_width
+        # self.stringer_count = stringer_count
+        # self.stringer_width = stringer_width
+        # self.plate_width = plate_width
+        self.b = b
 
     def crit_buckle_skin(self):
         return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.b))**2
+    
+    crit_buckle_skin_vec = np.vectorize(crit_buckle_skin)
 
 class BuckleColumn:
     def __init__(self, K, I, L, A):
@@ -307,4 +309,4 @@ class Design:
 kc = 2
 ks = 2
 K = 4
-print(Design(ks, kc, 4, 5, 3, K).buckle_check_skin())
+#print(Design(ks, kc, 4, 5, 3, K).buckle_check_skin())

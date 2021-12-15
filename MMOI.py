@@ -239,6 +239,6 @@ dict_ratio = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "S": specific_
 sorted_spec_Ixx = sorted(dict_Ixx.items(), key=lambda x: x[1], reverse=True)
 sorted_spec_Iyy = sorted(dict_Iyy.items(), key=lambda x: x[1], reverse=True)
 
-print(sorted_spec_Ixx)
-print(sorted_spec_Iyy)
+# print(sorted_spec_Ixx)
+# print(sorted_spec_Iyy)
 
