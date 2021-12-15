@@ -134,9 +134,11 @@ class MarginOfSafety:
         self.th_flang = th_flang
         self.height_str = height_str
         self.thick = thick
+        self.span_min = span_min
+        self.span_max = span_max
         
         self.corner_coords = corner_points_vec(self.span_position, n_str_top, n_str_bot, width_str, 
-                          area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, span_min = 0, span_max = 51.73/2)
+                          area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, self.span_min, self.span_max)
 
     def find_mos(self):
         applied_stress_top_right = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
