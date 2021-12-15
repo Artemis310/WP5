@@ -123,7 +123,7 @@ class MarginOfSafety:
     def __init__(self, n_str_top = 2, n_str_bot = 2, width_str = 0.02, 
                           area_str = 6e-4, centroid_x = 0.01, centroid_y = 0.01,
                           th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002, span_min = 0, span_max = 51.73 / 2, 
-                          str_k = 1, str_len = 1, str_i = 1, skn_kc = 1, skn_t = 1, skn_b = 1):
+                          str_k = 1, str_len = 1, str_i = 1, skn_kc = 1, skn_t = 1, skn_b = 1, ks = 1):
         self.span_position = 10
         self.n_str_top = n_str_top
         self.n_str_bot = n_str_bot
@@ -143,6 +143,7 @@ class MarginOfSafety:
         self.skn_kc = skn_kc
         self.skn_t = skn_t
         self.skn_b = skn_b
+        self.ks = ks
         
         self.corner_coords = corner_points_vec(n_str_top, n_str_bot, width_str, 
                           area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, self.span_min, self.span_max)
@@ -172,7 +173,7 @@ class MarginOfSafety:
 
 
         bckl_web = BuckleWeb(self.thick, self.span_min, self.span_max)
-        max_stress_shear = max(bckl_web.total_shear()[0], bckl_web.total_shear()[1])
+        max_stress_shear = max(bckl_web.total_shear(self.ks)[0], bckl_web.total_shear(self.ks)[1])
         fail_comp_shear = bckl_web.cri_buckle_web()
 
         margin_of_safety_at_span = min(fail_comp_normal/max_stress_normal, fail_comp_shear/max_stress_shear)
@@ -375,3 +376,5 @@ K = 4
 print(BuckleSkin(1,1,1).crit_buckle_skin())
 
 print(BuckleColumn(1,1,1,1).crit_buckle_stringer())
+
+print(MarginOfSafety().find_mos())
