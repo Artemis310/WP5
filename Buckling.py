@@ -120,14 +120,34 @@ class NormalStressCalcs:
     
 
 class MarginOfSafety:
-    def __init__(self, span_position):
+    def __init__(self, span_position, n_str_top = 2, n_str_bot = 2, width_str = 0.02, 
+                          area_str = 6e-4, centroid_x = 0.01, centroid_y = 0.01,
+                          th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002):
         self.span_position = span_position
+        self.n_str_top = n_str_top
+        self.n_str_bot = n_str_bot
+        self.width_str = width_str
+        self.area_str = area_str
+        self.centroid_x = centroid_x
+        self.centroid_y = centroid_y
+        self.th_spar = th_spar
+        self.th_flang = th_flang
+        self.height_str = height_str
+        self.thick = thick
 
     def find_mos(self):
-        applied_stress_top_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[0], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
-        applied_stress_top_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[1], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
-        applied_stress_bottom_left = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
-        applied_stress_bottom_right = NormalStressCalcs("Combined", corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
+        applied_stress_top_right = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
+            self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick, 
+            corner_points_vec(self.span_position)[0], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
+        applied_stress_top_left = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
+            self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick,
+            corner_points_vec(self.span_position)[1], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
+        applied_stress_bottom_left = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
+            self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick, 
+            corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[-1]).find_stress_at_span(self.span_position)
+        applied_stress_bottom_right = NormalStressCalcs("Combined", self.n_str_top, self.n_str_bot, self.width_str, 
+            self.area_str, self.centroid_x, self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick, 
+            corner_points_vec(self.span_position)[2], corner_points_vec(self.span_position)[3]).find_stress_at_span(self.span_position)
 
         max_stress_normal = max(applied_stress_top_right, applied_stress_top_left, applied_stress_bottom_right, applied_stress_bottom_left)
 
@@ -139,9 +159,11 @@ class MarginOfSafety:
         margin_of_safety_at_span = min(fail_comp_normal/max_stress_normal, fail_comp_shear/max_stress_shear)
 
         return margin_of_safety_at_span
+    
+    find_mos_vec = np.vectorize(find_mos)
 
     def plot_mos(self):
-        plt.plot(self.span_position, self.find_mos[0])
+        plt.plot(self.span_position, self.find_mos_vec[0])
         plt.xlabel("Span [m]")
         plt.ylabel("Margin of Safety [-]")
         plt.grid(b = True, which = 'major')
@@ -331,3 +353,6 @@ ks = 2
 K = 4
 #print(Design(ks, kc, 4, 5, 3, K).buckle_check_skin())
 #print(BuckleSkin(1,1,1).crit_buckle_skin())
+
+
+print()

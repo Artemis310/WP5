@@ -134,15 +134,18 @@ for i in range(n_bays):
     
     # Plate tension check
     
-    tens_anal = Bk.Tension_analysis(1000, 310e6, span_min, span_max)
+    tens_anal = Bk.Tension_analysis(top_str_bay_count[i], bot_str_bay_count[i],
+                                            str_width, str_area, centroid_x, centroid_y,
+                                            spr_th, flg_th, str_height, str_thick, 1000, 310e6, span_min, span_max)
     
     if tens_anal.check_for_failure():
         print(f"BAY {i+1}, Top Skin thickness (Tension) {Cl.Fore.GREEN} SUFFICIENT {Cl.Style.RESET_ALL}: \u2714")
     else:
         print(f"BAY {i+1}, Top Skin thickness (Tension) {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")
         
-    
-    
-    
-    
-    
+    # Crack propagation check
+    if Cp.check_crackprop_fail():
+        print(f"BAY {i+1}, Crack Propagation design {Cl.Fore.GREEN} SUFFICIENT {Cl.Style.RESET_ALL}: \u2714")
+    else:
+        print(f"BAY {i+1}, Crack Propagation design {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")
+        
