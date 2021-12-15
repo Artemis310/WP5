@@ -203,8 +203,8 @@ class Tension_analysis:
     def __init__(self, data_count= 1000, sigma_ult=310 * 10 ** 6, span_min= 0, span_max= 51.73 / 2):
         self.data_count = data_count
         self.span_locations = np.linspace(span_min, span_max, self.data_count)
-        self.inertia_xx = Mi.xx_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
-        self.inertia_yy = Mi.yy_vec_func(self.span_locations, 2, 2, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
+        self.inertia_xx = Mi.xx_vec_func(self.span_locations, 10, 10, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
+        self.inertia_yy = Mi.yy_vec_func(self.span_locations, 10, 10, 0.1, 6 * 10 ** -4, 0.1, 0.1, 0.001, 0.001, 0.1, 0.002)
         self.cross_section_dist_z_max = Mi.y_coord1(Mi.c_spar1) * Mi.c_vec(self.span_locations) - self.inertia_xx[0]
         self.cross_section_dist_x_max = Mi.c_spar1 * Mi.c_vec(self.span_locations) - self.inertia_yy[0]
         self.sigma_ult = sigma_ult
