@@ -137,7 +137,7 @@ class MarginOfSafety:
         self.span_min = span_min
         self.span_max = span_max
         
-        self.corner_coords = corner_points_vec(self.span_position, n_str_top, n_str_bot, width_str, 
+        self.corner_coords = corner_points_vec(n_str_top, n_str_bot, width_str, 
                           area_str, centroid_x, centroid_y, th_spar, th_flang, height_str, thick, self.span_min, self.span_max)
 
     def find_mos(self):
