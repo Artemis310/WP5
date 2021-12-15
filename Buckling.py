@@ -215,6 +215,12 @@ class Tension_analysis:
                                            -Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / \
                                self.inertia_yy[1]
             return np.column_stack((self.span_locations, second_tuple_val)), second_tuple_val * 1.5
+        
+    def check_for_failure(self):
+        if not np.any(self.stress_along_span[-1] >= self.sigma_ult):
+            return True
+        else:
+            return False
 
 
     def plotting_stress(self):
@@ -244,8 +250,7 @@ class BuckleSkin:
 
     def crit_buckle_skin(self):
         return  (((np.pi**2)*self.kc*self.E) / (12 * (1-self.p_ratio**2))) * ((self.t / self.b))**2
-    
-    crit_buckle_skin_vec = np.vectorize(crit_buckle_skin)
+
 
 class BuckleColumn:
     def __init__(self, K, I, L, A):
@@ -310,4 +315,4 @@ kc = 2
 ks = 2
 K = 4
 #print(Design(ks, kc, 4, 5, 3, K).buckle_check_skin())
-print(BuckleSkin(1,1,1).crit_buckle_skin())
+#print(BuckleSkin(1,1,1).crit_buckle_skin())
