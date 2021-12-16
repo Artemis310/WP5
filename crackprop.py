@@ -27,7 +27,7 @@ max_allowed_stress = allowed_stress(0.005/2,29*10**6)
 
 #print(f"max allowed stress = {max_allowed_stress/10e6:.2f} MPa")
 
-span_stress_col = bk.Tension_analysis().stress_along_span()[0]
+span_stress_col = bk.Tension_analysis().stress_along_span()[-1]
 
 #print(f"Actual tension stress at root = {span_stress_col[0,1]/10e6:.2f} MPa")
 
