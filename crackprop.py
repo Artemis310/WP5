@@ -32,8 +32,6 @@ class CrackProp:
         self.th_flang = th_flang
         self.height_str = height_str
         self.thick = thick
-        self.span_stress_col = bk.Tension_analysis(self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
-            self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick).stress_along_span()[-1]
     
     def allowed_stress(crack_length, KI):
         max_allowed_tension_stress = KI/((np.pi*crack_length)**(1/2))
@@ -42,7 +40,8 @@ class CrackProp:
     max_allowed_stress = allowed_stress(0.005/2,29*10**6)
     
     def check_crackprop_fail(self):
-        if not max(self.span_stress_col()) > self.max_allowed_stress:
+        if not max(bk.Tension_analysis(self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
+            self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick).stress_along_span()[-1]()) > self.max_allowed_stress:
             return True
         else:
             return False
@@ -63,5 +62,3 @@ class CrackProp:
 
 
 #location = np.where(span_stress_col[:,1] > 1e6)
-
-print(max(span_stress_col))
