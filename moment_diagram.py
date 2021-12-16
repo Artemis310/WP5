@@ -26,13 +26,13 @@ def Moment_diagramzy(y):
     Mom_Func_ZY = M1 + (sp.integrate.quad(scalc.ShearFuncBeforeEngineyz, 0, y)[0]) * np.heaviside((-y + Engine_loc), 0) + \
                    (sp.integrate.quad(scalc.ShearFuncBeforeEngineyz, 0, Engine_loc)[0]) * np.heaviside((y - Engine_loc), 0) + \
                   (sp.integrate.quad(scalc.ShearFuncAfterEngineyz, Engine_loc, y)[0]) * np.heaviside((y - Engine_loc), 0)
-    return 1.5*Mom_Func_ZY
+    return 1.5 * Mom_Func_ZY
 
 def moment_diagram_zx(y):
     mom_func_zx = M2 + (sp.integrate.quad(scalc.ShearFuncBeforeEnginexz, 0, y)[0]) * np.heaviside((-y + Engine_loc), 0) + \
                   (sp.integrate.quad(scalc.ShearFuncBeforeEnginexz, 0, Engine_loc)[0]) * np.heaviside((y - Engine_loc),0) + \
                   (sp.integrate.quad(scalc.ShearFuncAfterEnginexz, Engine_loc, y)[0]) * np.heaviside((y - Engine_loc),0)
-    return 1.5*mom_func_zx
+    return 1.5 * mom_func_zx
 
 # #vectorization of functions
 moment_yz_vec = np.vectorize(Moment_diagramzy)
@@ -40,11 +40,14 @@ moment_zx_vec = np.vectorize(moment_diagram_zx)
 
 """ Uncomment here under to get a plot of the moment diagrams of both planes"""
 # #computation and plotting
-# moment_yz = moment_yz_vec(span)
-# moment_zx = moment_zx_vec(span)
-# plt.plot(span, moment_yz,label = "yz")
-# plt.plot(span, moment_zx, label = "zx")
-# plt.ylabel("Moment zx-yz")
-# plt.xlabel("span")
-# plt.legend()
-# plt.show()
+def plotting():
+    moment_yz = moment_yz_vec(span)
+    moment_zx = moment_zx_vec(span)
+    plt.plot(span, moment_yz,label = "yz")
+    plt.plot(span, moment_zx, label = "zx")
+    plt.ylabel("Moment zx-yz")
+    plt.xlabel("span")
+    plt.legend()
+    plt.show()
+    return None
+plotting()

@@ -36,6 +36,8 @@ span_stress_col = bk.Tension_analysis().stress_along_span()[0]
 
 # else:
 #     print("You're all set!")
+bk.Tension_analysis().plotting_stress()
+
 
 def check_crackprop_fail():
     if not span_stress_col[0,1] > max_allowed_stress:

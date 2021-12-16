@@ -280,7 +280,7 @@ class Tension_analysis:
 
     def plotting_stress(self):
         plot_label = "Stress due to yz and xz plane bending"
-        plt.plot(self.stress_along_span()[:, 0], self.stress_along_span()[:, 1], 'k-', label=plot_label)
+        plt.plot(self.stress_along_span()[0][:, 0], self.stress_along_span()[0][:, 1], 'k-', label=plot_label)
         plt.xlabel("Span [m]")
         plt.ylabel("Normal Stress [Pa]")
         plt.grid(b=True, which='major')
