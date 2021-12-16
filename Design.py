@@ -61,8 +61,6 @@ for i in range(n_bays):
 
 # Determination of kc ratios for top and bottom plates
 
-input("Continue")
-
 max_plate_ratio_top = [] # Maxiumum a/b ratio for the top plate of each bay
 max_plate_ratio_bot = [] # Maxiumum a/b ratio for the bottom plate of each bay
 
@@ -96,7 +94,10 @@ k_str = int(input("Set the stringer buckling coefficient:")) # Stringer buckling
 
 
 # Crack propagation check
-if Cp.check_crackprop_fail():
+crck_check = Cp.CrackProp(top_str_bay_count[0], bot_str_bay_count[0], str_width, str_area, centroid_x, centroid_y, spr_th, flg_th,
+                          str_height, str_thick)
+
+if crck_check.check_crackprop_fail():
     print(f"Crack Propagation design {Cl.Fore.GREEN} SUFFICIENT {Cl.Style.RESET_ALL}: \u2714")
 else:
     print(f"Crack Propagation design {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")

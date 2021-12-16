@@ -96,7 +96,7 @@ def x3(y):
 
 def spacing_str_top(y, n_str_top, width_str_top):
     dummy2 = (x1(y) - width_str_top * n_str_top) / (n_str_top - 1)
-    return dummy2
+    return dummy2 #lmao Damien can't code
 
 
 def spacing_str_bot(y, n_str_bot, width_str_bot):
