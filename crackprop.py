@@ -44,7 +44,7 @@ class CrackProp:
             self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick).stress_along_span()[-1]
     
     def check_crackprop_fail(self):
-        if not max(self.span_stress_col) > self.max_allowed_stress:
+        if not max(self.span_stress_col()) > self.max_allowed_stress:
             return True
         else:
             return False
