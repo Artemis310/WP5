@@ -46,3 +46,4 @@ def check_crackprop_fail():
 
 #location = np.where(span_stress_col[:,1] > 1e6)
 
+print(max(span_stress_col))
