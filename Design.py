@@ -6,7 +6,6 @@ import crackprop as Cp
 import MMOI as Mm
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn
 import colorama as Cl
 
 # Wingbox Constants
@@ -14,15 +13,17 @@ len_wbox = 51.73/2
 
 # Set component properties
 
-str_height = 0.02 # Stringer height [m]
-str_width = 0.02  # Stringer width [m]
-str_thick = 0.001 # Stringer thickness [m]
+str_height = 0.1 # Stringer height [m]
+str_width = 0.1  # Stringer width [m]
+str_thick = 0.04 # Stringer thickness [m]
 str_area = (str_height + str_width) * str_thick # Stringer area [m^2]
 
-spr_th = 1 # Spar thickness [m]
 
-skin_thick_top = 1 # Top skin thickness [m]
-skin_thick_bot = 1 # Bottom skin thickness [m]
+skin_thick_top = 0.04 # Top skin thickness [m]
+skin_thick_bot = 0.04 # Bottom skin thickness [m]
+
+flg_th = (skin_thick_top + skin_thick_bot) / 2 # Flange thickness [m]
+spr_th = 0.04 # Spar thickness [m]
 
 centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids [m]
 
@@ -52,13 +53,15 @@ for i in range(n_bays):
     POI = Bk.corner_points(top_str_bay_count[i], bot_str_bay_count[i], str_width, str_area, centroid_x, centroid_y, spr_th, flg_th,
                                         str_height, str_thick, rib_loc[i], rib_loc[i+1])
 
-    bay_width = np.abs(POI[-1] - POI[-2])
+    bay_width = np.abs(-POI[-1] + POI[-2])
     width_of_bay[:,i] = bay_width
 
-    top_width_bay_str[:,i] = (bay_width-top_str_bay_count[i]*str_width)/(top_str_bay_count[i] - 1)
-    bot_width_bay_str[:,i] = (bay_width-bot_str_bay_count[i]*str_width)/(bot_str_bay_count[i] - 1)
+    top_width_bay_str[:,i] = (bay_width - top_str_bay_count[i]*str_width)/(top_str_bay_count[i] - 1)
+    bot_width_bay_str[:,i] = (bay_width - bot_str_bay_count[i]*str_width)/(bot_str_bay_count[i] - 1)
 
 # Determination of kc ratios for top and bottom plates
+
+input("Continue")
 
 max_plate_ratio_top = [] # Maxiumum a/b ratio for the top plate of each bay
 max_plate_ratio_bot = [] # Maxiumum a/b ratio for the bottom plate of each bay
@@ -81,7 +84,7 @@ for i in range(n_bays):
     POI = Bk.corner_points(top_str_bay_count[i], bot_str_bay_count[i], str_width, str_area, centroid_x, centroid_y, spr_th, flg_th,
                                         str_height, str_thick, rib_loc[i], rib_loc[i+1])
     
-    max_plate_ratio_web.append(max((rib_loc[i+1] - rib_loc[i])/abs(POI[1] - POI[2])))
+    max_plate_ratio_web.append(max((rib_loc[i+1] - rib_loc[i])/abs(POI[0] - POI[2])))
     
 print(f"Max a/b ratio of web per bay: {(max_plate_ratio_web)}")
 
@@ -113,7 +116,7 @@ for i in range(n_bays):
     
     normal_buckle_stress_along_bay = Bk.NormalStressCalcs("Combined", top_str_bay_count[i], bot_str_bay_count[i],
                                             str_width, str_area, centroid_x, centroid_y,
-                                            spr_th, flg_th, str_height, str_thick, corner_coords[0], corner_coords[-2]).stress_along_span(
+                                            spr_th, flg_th, str_height, str_thick, corner_coords[1], corner_coords[-2]).stress_along_span(
                                             span_min, span_max)
     
     # Buckle check: Skin
