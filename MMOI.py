@@ -3,6 +3,8 @@ from math import pi
 from typing import no_type_check
 import numpy as np
 
+#from moment_inerta import tot_area
+
 def L_stringer(height, lower_width, thickness):  # horizontal part of L is width and vertical part is height
     x_lower = lower_width / 2
     x_height = 0
@@ -242,3 +244,26 @@ sorted_spec_Iyy = sorted(dict_Iyy.items(), key=lambda x: x[1], reverse=True)
 # print(sorted_spec_Ixx)
 # print(sorted_spec_Iyy)
 
+#C-stringer without thin-walled assumption
+def C_stringer_thick(lower_width, height, upper_width, thickness):
+        x_lower = thickness + lower_width/2
+        x_height = thickness/2
+        x_upper = thickness + upper_width/2
+        y_lower = thickness/2
+        y_height = height/2
+        y_upper = height - thickness/2
+
+        x_bar = (lower_width*thickness*x_lower + height*thickness*x_height+upper_width*thickness*x_upper)/(lower_width*thickness + height*thickness+upper_width*thickness)
+        y_bar = (lower_width*thickness*y_lower + height*thickness*y_height+upper_width*thickness*y_upper)/(lower_width*thickness + height*thickness+upper_width*thickness)
+
+        tot_area = lower_width*thickness + height*thickness+upper_width*thickness
+
+        Ixx = (lower_width*thickness**3)/12 + lower_width*thickness*(y_bar-y_lower)**2 + (thickness*height**3)/12 + height*thickness*(y_bar-y_height)**2 +(upper_width*thickness**3)/12 + upper_width*thickness*(y_bar-y_upper)**2
+        Iyy = (thickness*lower_width**3)/12 + lower_width*thickness*(x_bar-x_lower)**2 + (height*thickness**3)/12 + height*thickness*(x_bar-x_height)**2 + (thickness*upper_width**3)/12 + upper_width*thickness*(x_bar-x_upper)**2
+
+        specific_Ixx = Ixx/tot_area
+        specific_Iyy = Iyy/tot_area
+        return Ixx, Iyy, tot_area, x_bar, y_bar, specific_Ixx, specific_Iyy
+
+#print("C-stringer: Ixx, Iyy, C_area, x_bar_C, y_bar_C = ", C_stringer_thick(0.25, 0.5, 0.25, 0.001))
+#print("C - Ixx/tot_area, Iyy/tot_area", C_stringer_thick(0.25, 0.5, 0.25, 0.001)[0]/C_stringer_thick(0.25, 0.5, 0.25, 0.001)[2], C_stringer_thick(0.25, 0.5, 0.25, 0.001)[1]/C_stringer_thick(0.25, 0.5, 0.25, 0.001)[2])
