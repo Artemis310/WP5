@@ -240,9 +240,9 @@ class BuckleWeb:
         plt.show()
 
 class Tension_analysis:
-    def __init__(self, n_str_top = 2, n_str_bot = 2, width_str = 0.02, 
+    def __init__(self, n_str_top = 24, n_str_bot = 12, width_str = 0.02,
                           area_str = 6e-4, centroid_x = 0.01, centroid_y = 0.01,
-                          th_spar = 0.002, th_flang = 0.001, height_str = 0.02, thick = 0.002, data_count= 1000,
+                          th_spar = 0.015, th_flang = 0.040, height_str = 0.02, thick = 0.002, data_count= 1000,
                           sigma_ult=310 * 10 ** 6, span_min= 0, span_max= 51.73 / 2):
         self.data_count = data_count
         self.n_str_top = n_str_top
@@ -265,14 +265,14 @@ class Tension_analysis:
         self.sigma_ult = sigma_ult
 
     def stress_along_span(self):
-            second_tuple_val = (Md.moment_yz_vec(self.span_locations) * self.cross_section_dist_z_max) / \
+            stress_at_spanloc = (Md.moment_yz_vec(self.span_locations) * self.cross_section_dist_z_max) / \
                                self.inertia_xx[1] + (
                                            -Md.moment_zx_vec(self.span_locations) * self.cross_section_dist_x_max) / \
                                self.inertia_yy[1]
-            return np.column_stack((self.span_locations, second_tuple_val)), second_tuple_val * 1.5
+            return np.column_stack((self.span_locations, 1.5 * stress_at_spanloc)), stress_at_spanloc * 1.5
         
     def check_for_failure(self):
-        if not np.any(self.stress_along_span()[-1] >= self.sigma_ult):
+        if not np.any(self.stress_along_span()[0][-1] >= self.sigma_ult):
             return True
         else:
             return False
@@ -280,7 +280,7 @@ class Tension_analysis:
 
     def plotting_stress(self):
         plot_label = "Stress due to yz and xz plane bending"
-        plt.plot(self.stress_along_span()[:, 0], self.stress_along_span()[:, 1], 'k-', label=plot_label)
+        plt.plot(self.stress_along_span()[0][:, 0], self.stress_along_span()[0][:, 1], 'k-', label=plot_label)
         plt.xlabel("Span [m]")
         plt.ylabel("Normal Stress [Pa]")
         plt.grid(b=True, which='major')

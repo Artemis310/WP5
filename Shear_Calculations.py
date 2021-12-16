@@ -30,7 +30,7 @@ def centre_lift():
     return (sp.integrate.quad(lift_centre_func, 0, b_half)[0]) / (sp.integrate.quad(lift, 0, b_half)[0])
 
 def LiftWeight(z):
-    return 2.5*((L_fit[0] * z ** 4) + (L_fit[1] * z ** 3) + (L_fit[2] * z ** 2) + (L_fit[3] * z) + (
+    return ((L_fit[0] * z ** 4) + (L_fit[1] * z ** 3) + (L_fit[2] * z ** 2) + (L_fit[3] * z) + (
         L_fit[4])) - w_wing / b_half
 
 # Wing weight
@@ -41,7 +41,7 @@ def DistributedWingWeight():
 D_fit = np.polyfit(aerostandard.total_dist()[0], aerostandard.total_dist()[2], 4)
 
 def Drag(z):
-    return (2.5**2)*((D_fit[0] * z ** 4) + (D_fit[1] * z ** 3) + (D_fit[2] * z ** 2) + (D_fit[3] * z) + (D_fit[4]))
+    return ((D_fit[0] * z ** 4) + (D_fit[1] * z ** 3) + (D_fit[2] * z ** 2) + (D_fit[3] * z) + (D_fit[4]))
 
 def drag_centre_func(z):
     return ((D_fit[0] * z ** 4) + (D_fit[1] * z ** 3) + (D_fit[2] * z ** 2) + (D_fit[3] * z) + (D_fit[4])) * z

@@ -26,13 +26,13 @@ def Moment_diagramzy(y):
     Mom_Func_ZY = M1 + (sp.integrate.quad(scalc.ShearFuncBeforeEngineyz, 0, y)[0]) * np.heaviside((-y + Engine_loc), 0) + \
                    (sp.integrate.quad(scalc.ShearFuncBeforeEngineyz, 0, Engine_loc)[0]) * np.heaviside((y - Engine_loc), 0) + \
                   (sp.integrate.quad(scalc.ShearFuncAfterEngineyz, Engine_loc, y)[0]) * np.heaviside((y - Engine_loc), 0)
-    return 1.5*Mom_Func_ZY
+    return Mom_Func_ZY
 
 def moment_diagram_zx(y):
     mom_func_zx = M2 + (sp.integrate.quad(scalc.ShearFuncBeforeEnginexz, 0, y)[0]) * np.heaviside((-y + Engine_loc), 0) + \
                   (sp.integrate.quad(scalc.ShearFuncBeforeEnginexz, 0, Engine_loc)[0]) * np.heaviside((y - Engine_loc),0) + \
                   (sp.integrate.quad(scalc.ShearFuncAfterEnginexz, Engine_loc, y)[0]) * np.heaviside((y - Engine_loc),0)
-    return 1.5*mom_func_zx
+    return mom_func_zx
 
 # #vectorization of functions
 moment_yz_vec = np.vectorize(Moment_diagramzy)
