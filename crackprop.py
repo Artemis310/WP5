@@ -23,7 +23,7 @@ def allowed_stress(crack_length, KI):
     max_allowed_tension_stress = KI/((np.pi*crack_length)**(1/2))
     return max_allowed_tension_stress
 
-max_allowed_stress = allowed_stress(0.005,29*10**6)
+max_allowed_stress = allowed_stress(0.005/2,29*10**6)
 
 #print(f"max allowed stress = {max_allowed_stress/10e6:.2f} MPa")
 
