@@ -89,7 +89,7 @@ def S_stringer(height, lower_width, width_upper, thickness):
 #print("S-stringer: Ixx, Iyy, S_area, x_bar_S, y_bar_S = ", S_stringer(0.5, 0.25/2, 0.25/2, 0.001))
 #print("S - Ixx/tot_area, Iyy/tot_area", S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[0]/S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[2], S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[1]/S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[2])
 
-def C_stringer(lower_width, height, upper_width, thickness):
+def C_stringer_thin(lower_width, height, upper_width, thickness):
     x_lower = lower_width / 2
     x_height = 0
     x_upper = upper_width / 2
@@ -221,31 +221,12 @@ def Hat_stringer(heigth, lowerleft_width, lowerright_width, upper_width, thickne
 #print("Hat-stringer: Ixx, Iyy, Hat_area, x_bar_Hat, y_bar_Hat = ", Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001))
 #print("Hat - Ixx/tot_area, Iyy/tot_area", Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[0]/Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[2], Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[1]/Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[2])
 
-specific_Ixx_list = [L_stringer(0.5, 0.25, 0.001)[5], I_stringer(0.5, 0.25, 0.25, 0.001)[5], S_stringer(0.5, 0.25 / 2, 0.25 / 2, 0.001)[5], C_stringer(0.25, 0.5, 0.25, 0.001)[5], T_stringer(0.5, 0.25, 0.001)[5], J_stringer(0.5 - 0.25 / 4, 0.25, 0.25 / 4, 0.001)[5], Hat_stringer(0.5, 0.25 / 3, 0.25 / 3, 0.25 / 3, 0.001)[5]]
-specific_Ixx_list = [round(num, 4) for num in specific_Ixx_list]
-specific_Iyy_list = [L_stringer(0.5, 0.25, 0.001)[6],I_stringer(0.5, 0.25, 0.25, 0.001)[6],S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[6],C_stringer(0.25, 0.5, 0.25, 0.001)[6],T_stringer(0.5, 0.25, 0.001)[6],J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[6],Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[6]]
-specific_Iyy_list = [round(num,4) for num in specific_Iyy_list]
-
-
-
-
-
-dict_Ixx = {"L":specific_Ixx_list[0], "I":specific_Ixx_list[1], "S": specific_Ixx_list[2], "C":specific_Ixx_list[3], "T":specific_Ixx_list[4],
-              "J":specific_Ixx_list[5], "Hat":specific_Ixx_list[6]}
-dict_Iyy = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "S": specific_Iyy_list[2], "C":specific_Iyy_list[3], "T":specific_Iyy_list[4],
-              "J":specific_Iyy_list[5], "Hat":specific_Iyy_list[6]}
-
-dict_ratio = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "S": specific_Iyy_list[2], "C":specific_Iyy_list[3], "T":specific_Iyy_list[4],
-              "J":specific_Iyy_list[5], "Hat":specific_Iyy_list[6]}
-
-sorted_spec_Ixx = sorted(dict_Ixx.items(), key=lambda x: x[1], reverse=True)
-sorted_spec_Iyy = sorted(dict_Iyy.items(), key=lambda x: x[1], reverse=True)
 
 # print(sorted_spec_Ixx)
 # print(sorted_spec_Iyy)
 
 #C-stringer without thin-walled assumption
-def C_stringer_thick(lower_width, height, upper_width, thickness):
+def C_stringer(lower_width, height, upper_width, thickness):
         x_lower = thickness + lower_width/2
         x_height = thickness/2
         x_upper = thickness + upper_width/2
@@ -267,3 +248,24 @@ def C_stringer_thick(lower_width, height, upper_width, thickness):
 
 #print("C-stringer: Ixx, Iyy, C_area, x_bar_C, y_bar_C = ", C_stringer_thick(0.25, 0.5, 0.25, 0.001))
 #print("C - Ixx/tot_area, Iyy/tot_area", C_stringer_thick(0.25, 0.5, 0.25, 0.001)[0]/C_stringer_thick(0.25, 0.5, 0.25, 0.001)[2], C_stringer_thick(0.25, 0.5, 0.25, 0.001)[1]/C_stringer_thick(0.25, 0.5, 0.25, 0.001)[2])
+
+
+specific_Ixx_list = [L_stringer(0.5, 0.25, 0.001)[5], I_stringer(0.5, 0.25, 0.25, 0.001)[5], S_stringer(0.5, 0.25 / 2, 0.25 / 2, 0.001)[5], C_stringer(0.25, 0.5, 0.25, 0.001)[5], T_stringer(0.5, 0.25, 0.001)[5], J_stringer(0.5 - 0.25 / 4, 0.25, 0.25 / 4, 0.001)[5], Hat_stringer(0.5, 0.25 / 3, 0.25 / 3, 0.25 / 3, 0.001)[5]]
+specific_Ixx_list = [round(num, 4) for num in specific_Ixx_list]
+specific_Iyy_list = [L_stringer(0.5, 0.25, 0.001)[6],I_stringer(0.5, 0.25, 0.25, 0.001)[6],S_stringer(0.5, 0.25/2, 0.25/2, 0.001)[6],C_stringer(0.25, 0.5, 0.25, 0.001)[6],T_stringer(0.5, 0.25, 0.001)[6],J_stringer(0.5-0.25/4, 0.25, 0.25/4, 0.001)[6],Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[6]]
+specific_Iyy_list = [round(num,4) for num in specific_Iyy_list]
+
+
+
+
+
+dict_Ixx = {"L":specific_Ixx_list[0], "I":specific_Ixx_list[1], "S": specific_Ixx_list[2], "C":specific_Ixx_list[3], "T":specific_Ixx_list[4],
+              "J":specific_Ixx_list[5], "Hat":specific_Ixx_list[6]}
+dict_Iyy = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "S": specific_Iyy_list[2], "C":specific_Iyy_list[3], "T":specific_Iyy_list[4],
+              "J":specific_Iyy_list[5], "Hat":specific_Iyy_list[6]}
+
+dict_ratio = {"L":specific_Iyy_list[0], "I":specific_Iyy_list[1], "S": specific_Iyy_list[2], "C":specific_Iyy_list[3], "T":specific_Iyy_list[4],
+              "J":specific_Iyy_list[5], "Hat":specific_Iyy_list[6]}
+
+sorted_spec_Ixx = sorted(dict_Ixx.items(), key=lambda x: x[1], reverse=True)
+sorted_spec_Iyy = sorted(dict_Iyy.items(), key=lambda x: x[1], reverse=True)
