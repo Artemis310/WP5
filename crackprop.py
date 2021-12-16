@@ -40,8 +40,9 @@ class CrackProp:
     max_allowed_stress = allowed_stress(0.005/2,29*10**6)
     
     def check_crackprop_fail(self):
-        if not max(bk.Tension_analysis(self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
-            self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick).stress_along_span()[-1]()) > self.max_allowed_stress:
+        tens_anal = bk.Tension_analysis(self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
+            self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick)
+        if not tens_anal.stress_along_span()[-1] > self.max_allowed_stress:
             return True
         else:
             return False
