@@ -27,7 +27,7 @@ max_allowed_stress = allowed_stress(0.005/2,29*10**6)
 
 #print(f"max allowed stress = {max_allowed_stress/10e6:.2f} MPa")
 
-span_stress_col = bk.Tension_analysis().stress_along_span()[1]
+span_stress_col = bk.Tension_analysis().stress_along_span()[-1]
 
 #print(f"Actual tension stress at root = {span_stress_col[0,1]/10e6:.2f} MPa")
 
@@ -46,4 +46,4 @@ def check_crackprop_fail():
 
 #location = np.where(span_stress_col[:,1] > 1e6)
 
-bk.Tension_analysis().plotting_stress()
+print(max(span_stress_col))
