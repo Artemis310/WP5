@@ -221,6 +221,7 @@ def Hat_stringer(heigth, lowerleft_width, lowerright_width, upper_width, thickne
 #print("Hat-stringer: Ixx, Iyy, Hat_area, x_bar_Hat, y_bar_Hat = ", Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001))
 #print("Hat - Ixx/tot_area, Iyy/tot_area", Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[0]/Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[2], Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[1]/Hat_stringer(0.5, 0.25/3, 0.25/3, 0.25/3, 0.001)[2])
 
+#bruh
 
 # print(sorted_spec_Ixx)
 # print(sorted_spec_Iyy)
