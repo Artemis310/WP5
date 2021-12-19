@@ -24,7 +24,11 @@ skin_thick_top = 0.01 # Top skin thickness [m]
 skin_thick_bot = 0.01 # Bottom skin thickness [m]
 
 flg_th = (skin_thick_top + skin_thick_bot) / 2 # Flange thickness [m]
+<<<<<<< HEAD
 spr_th = 0.012 # Spar thickness [m]
+=======
+spr_th = 0.017 # Spar thickness [m]
+>>>>>>> 136b20c403353f2beb73d7de6ea2b0cd977c3d2e
 
 centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids [m]
 
@@ -39,15 +43,26 @@ def list_input(inputted_list):
 
 #rib_loc = np.array(list_input(input("Input list of rib locations (make sure to include 0 and 25.865):"))) # Set locations of the ribs. Space separate list
 
+<<<<<<< HEAD
 rib_loc = np.array([0, 3, 6, 9.05, 13, 15, 20, 25.865])
+=======
+rib_loc = np.array([0, 3,6,9.05,13,15,20,25.865])
+bay_lengths = np.diff(rib_loc)
+
+>>>>>>> 136b20c403353f2beb73d7de6ea2b0cd977c3d2e
 
 n_bays = len(rib_loc) - 1 # Number of bays
 
 #top_str_bay_count = np.array(list_input(input("Input list of stringer count per bay (top):"))) # Number of stringers in each bay, make sure len(top_Str_bay) = n_bays
 #bot_str_bay_count = np.array(list_input(input("Input list of stringer count per bay (bottom):"))) # Number of stringers in each bay, make sure len(bot_str_bay) = n_bays
 
+<<<<<<< HEAD
 top_str_bay_count = np.array([12, 10, 10, 8, 6, 4, 3])
 bot_str_bay_count = np.array([10, 8, 8, 6, 4, 3, 3]) 
+=======
+top_str_bay_count = np.array([12,10,10,8,6,4,3])
+bot_str_bay_count = np.array([10,8,8,6,4,3,3])
+>>>>>>> 136b20c403353f2beb73d7de6ea2b0cd977c3d2e
 
 top_width_bay_str = np.zeros((1000, n_bays)) # Distances between top stringers in each bay, note each column is one bay
 bot_width_bay_str = np.zeros((1000, n_bays)) # Same as line above but for bottom stringers
@@ -82,8 +97,8 @@ print(f"Max a/b ratio of bot plate per bay: {(max_plate_ratio_bot)}")
 # kc_top_bay = np.array(list_input(input("Input list of kc values (top):"))) # Input kc values for each bay, make sure len(kc_top_bay) = n_bays. Space separate the numbers
 # kc_bot_bay = np.array(list_input(input("Input list of kc values (bot):"))) # Same as line above but for bottom bay
 
-kc_top_bay = np.array([4, 4, 4, 4, 4, 4, 4])
-kc_bot_bay = np.array([4, 4, 4, 4, 4, 4, 4])
+kc_top_bay = np.array([4] * len(rib_loc))
+kc_bot_bay = np.array([4] * len(rib_loc))
 
 # Determination of ks ratios for website
 
@@ -98,11 +113,12 @@ print(f"Max a/b ratio of web per bay: {(max_plate_ratio_web)}")
 
 # ks_per_bay = np.array(list_input(input("Input list of ks values:"))) # Input ks values for each bay, make sure len(kc_top_bay) = n_bays
 
-ks_per_bay = np.array([5, 5, 5, 5, 5, 5, 5])
+ks_per_bay = np.array([5] * len(rib_loc))
 
 # k_str = int(input("Set the stringer buckling coefficient:")) # Stringer buckling coefficient
 
 k_str = 1
+
 
 # -------------------------------------------- Checking design for failure -------------------------------------------------------
 
@@ -176,6 +192,32 @@ for i in range(n_bays):
         print(f"BAY {i+1}, Bottom Skin thickness (Tension) {Cl.Fore.GREEN} SUFFICIENT {Cl.Style.RESET_ALL}: \u2714")
     else:
         print(f"BAY {i+1}, Bottom Skin thickness (Tension) {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")
+
+class Weight:
+    def __init__(self, t_ribs = 0.002):
+        self.density = 2700
+        self.rib_loc = rib_loc
+        self.string_area = str_area
+        self.span = 51.73 / 2
+        self.area_ribs = Bk.cross_section_area(rib_loc)
+        self.n_ribs = n_bays
+        self.t_ribs = t_ribs
+        self.t_skin_top = skin_thick_top
+        self.t_skin_bottom = skin_thick_bot
+        self.width = 1  # constant
+        self.top_str_bay_count = top_str_bay_count
+        self.bottom_str_bay_count = bot_str_bay_count
+        self.bay_lengths = bay_lengths
+        
+    def weight_calc(self):
+        rib_contr = self.n_ribs * self.t_ribs * self.area_ribs * self.density
+        skin_contr = self.span * self.density * self.width * (self.t_skin_top + self.t_skin_bottom)
+        stringer_contr_top = self.string_area * self.top_str_bay_count * self.density * self.bay_lengths
+        stringer_contr_bot = self.string_area * self.bottom_str_bay_count * self.density * self.bay_lengths
+        return np.sum(rib_contr) + np.sum(skin_contr) + np.sum(stringer_contr_top) + np.sum(stringer_contr_bot)
+
+print(Weight().weight_calc())
+        
         
     # Margin of Safety plot, not including crack propagation    
     
@@ -197,6 +239,7 @@ mos_str_values = np.zeros((1000, n_bays))
 
 mos_web_values = np.zeros((1000, n_bays))
 
+<<<<<<< HEAD
 mos_loc = np.zeros((1000, n_bays))
 
 for i in range(n_bays):
@@ -255,3 +298,15 @@ ax = plt.gca()
 # plt.grid(True)
 # ax.set_ylim([0, 90])
 # plt.show()
+=======
+            shear_stress = Bk.BuckleWeb(self.spar_thick, rib_loc[i], rib_loc[i+1]).total_shear()[0]
+            
+            skin_buckle = Bk.BuckleSkin(4, self.flange_thick, rib_loc[i+1] - rib_loc[i]).crit_buckle_skin()
+            str_buckle = Bk.BuckleColumn(k_str, Mm.C_stringer(self.str_width, self.str_height, self.str_width, self.str_thick),
+                                         rib_loc[i+1] - rib_loc[i], self.str_area).crit_buckle_stringer()
+            web_buckle = Bk.BuckleWeb(self.spar_thick, rib_loc[i], rib_loc[i+1]).cri_buckle_web(ks_per_bay)
+            
+            
+            
+print(Weight(0.001).weight_calc())
+>>>>>>> 136b20c403353f2beb73d7de6ea2b0cd977c3d2e
