@@ -16,15 +16,15 @@ len_wbox = 51.73/2
 
 str_height = 0.06 # Stringer height [m]
 str_width = 0.06  # Stringer width [m]
-str_thick = 0.007 # Stringer thickness [m]
+str_thick = 0.005 # Stringer thickness [m]
 str_area = (str_height + str_width) * str_thick # Stringer area [m^2]
 
 
-skin_thick_top = 0.015 # Top skin thickness [m]
-skin_thick_bot = 0.015 # Bottom skin thickness [m]
+skin_thick_top = 0.07 # Top skin thickness [m]
+skin_thick_bot = 0.07 # Bottom skin thickness [m]
 
 flg_th = (skin_thick_top + skin_thick_bot) / 2 # Flange thickness [m]
-spr_th = 0.015 # Spar thickness [m]
+spr_th = 0.020 # Spar thickness [m]
 
 centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids [m]
 
