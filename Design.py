@@ -7,6 +7,7 @@ import MMOI as Mm
 import numpy as np
 import matplotlib.pyplot as plt
 import colorama as Cl
+import moment_inerta as Mi
 
 # Wingbox Constants
 len_wbox = 51.73/2
@@ -27,12 +28,14 @@ spr_th = 0.04 # Spar thickness [m]
 
 centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids [m]
 
+# Defining functions to be used in Design Configuring stage
 
 def list_input(inputted_list):
     converted_to_list = inputted_list.split(" ")
     return list(map(float, converted_to_list))
+            
 
-# ------------------------------------------------- Design configuring ---------------------------------------------------------------
+# ------------------------------------------------- Design Configuring ---------------------------------------------------------------
 
 rib_loc = np.array(list_input(input("Input list of rib locations (make sure to include 0 and 25.865):"))) # Set locations of the ribs. Space separate list
 
@@ -79,10 +82,9 @@ kc_bot_bay = np.array(list_input(input("Input list of kc values (bot):"))) # Sam
 max_plate_ratio_web = [] # Maximum a/b ratio of the spar of each bay
 
 for i in range(n_bays):
-    POI = Bk.corner_points(top_str_bay_count[i], bot_str_bay_count[i], str_width, str_area, centroid_x, centroid_y, spr_th, flg_th,
-                                        str_height, str_thick, rib_loc[i], rib_loc[i+1])
+    span_values = np.linspace(rib_loc[i], rib_loc[i+1], 1000)
     
-    max_plate_ratio_web.append(max((rib_loc[i+1] - rib_loc[i])/abs(POI[0] - POI[2])))
+    max_plate_ratio_web.append(max((rib_loc[i+1] - rib_loc[i])/Mi.z1(span_values)))
     
 print(f"Max a/b ratio of web per bay: {(max_plate_ratio_web)}")
 
@@ -119,6 +121,7 @@ for i in range(n_bays):
                                             str_width, str_area, centroid_x, centroid_y,
                                             spr_th, flg_th, str_height, str_thick, corner_coords[1], corner_coords[-2]).stress_along_span(
                                             span_min, span_max)
+
     
     # Buckle check: Skin
     bckl_skin_top = Bk.BuckleSkin(kc_top_bay[i], skin_thick_top, top_width_bay_str[:,i])
