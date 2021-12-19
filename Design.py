@@ -164,6 +164,29 @@ for i in range(n_bays):
         print(f"BAY {i+1}, Bottom Skin thickness (Tension) {Cl.Fore.GREEN} SUFFICIENT {Cl.Style.RESET_ALL}: \u2714")
     else:
         print(f"BAY {i+1}, Bottom Skin thickness (Tension) {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")
+
+class Weight:
+    def __init__(self, t_ribs):
+        self.density = 2700
+        self.rib_loc = rib_loc
+        self.string_area = str_area
+        self.span = 51.73 / 2
+        self.area_ribs = Bk.cross_section_area(rib_loc)
+        self.n_ribs = n_bays
+        self.t_ribs = t_ribs
+        self.t_skin_top = skin_thick_top
+        self.t_skin_bottom = skin_thick_bot
+        self.width = 1  # constant
+        self.top_str_bay_count = top_str_bay_count
+        self.bottom_str_bay_count = bot_str_bay_count
+        
+    def weight_calc(self):
+        rib_contr = self.n_ribs * self.t_ribs * self.area_ribs * self.density
+        skin_contr = self.span * self.density * self.width * (self.t_skin_top + self.t_skin_bottom)
+        stringer_contr = self.string_area * (self.top_str_bay_count + self.bottom_str_bay_count) * self.density * self.rib_loc[0:]
+        return sum(rib_contr + skin_contr + stringer_contr)
+
+        
         
     # Margin of Safety plot, not including crack propagation    
     
@@ -177,3 +200,5 @@ for i in range(n_bays):
 #     plt.plot(span_values_plot, mos.plot_mos())
     
 # plt.show()
+
+print(Weight(0.001).weight_calc())
