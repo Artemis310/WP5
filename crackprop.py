@@ -33,19 +33,21 @@ class CrackProp:
         self.height_str = height_str
         self.thick = thick
     
-    def allowed_stress(crack_length, KI):
+    def allowed_stress(self, crack_length, KI):
         max_allowed_tension_stress = KI/((np.pi*crack_length)**(1/2))
         return max_allowed_tension_stress
 
-    max_allowed_stress = allowed_stress(0.005/2,29*10**6)
+    # max_allowed_stress = allowed_stress(0.005/2,29*10**6)
     
     def check_crackprop_fail(self):
         tens_anal = bk.Tension_analysis(self.n_str_top, self.n_str_bot, self.width_str, self.area_str, self.centroid_x, 
             self.centroid_y, self.th_spar, self.th_flang, self.height_str, self.thick)
-        if not max(np.abs(tens_anal.stress_along_span()[-1])) > self.max_allowed_stress:
+        if not max(np.abs(tens_anal.stress_along_span()[-1])) > self.allowed_stress(0.005/2, 29e6):
             return True
         else:
             return False
+
+print(CrackProp().check_crackprop_fail())
 
 
 #print(f"max allowed stress = {max_allowed_stress/10e6:.2f} MPa")
