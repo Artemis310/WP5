@@ -14,17 +14,17 @@ len_wbox = 51.73/2
 
 # Set component properties
 
-str_height = 0.06 # Stringer height [m]
-str_width = 0.06  # Stringer width [m]
-str_thick = 0.005 # Stringer thickness [m]
+str_height = 0.18 # Stringer height [m]
+str_width = 0.18  # Stringer width [m]
+str_thick = 0.015 # Stringer thickness [m]
 str_area = (str_height + str_width) * str_thick # Stringer area [m^2]
 
 
-skin_thick_top = 0.07 # Top skin thickness [m]
-skin_thick_bot = 0.07 # Bottom skin thickness [m]
+skin_thick_top = 0.01 # Top skin thickness [m]
+skin_thick_bot = 0.01 # Bottom skin thickness [m]
 
 flg_th = (skin_thick_top + skin_thick_bot) / 2 # Flange thickness [m]
-spr_th = 0.020 # Spar thickness [m]
+spr_th = 0.017 # Spar thickness [m]
 
 centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids [m]
 
@@ -39,15 +39,17 @@ def list_input(inputted_list):
 
 #rib_loc = np.array(list_input(input("Input list of rib locations (make sure to include 0 and 25.865):"))) # Set locations of the ribs. Space separate list
 
-rib_loc = np.array([0, 3, 6, 9.05, 13, 15, 20, 25.865])
+rib_loc = np.array([0, 3,6,9.05,13,15,20,25.865])
+bay_lengths = np.diff(rib_loc)
+
 
 n_bays = len(rib_loc) - 1 # Number of bays
 
 #top_str_bay_count = np.array(list_input(input("Input list of stringer count per bay (top):"))) # Number of stringers in each bay, make sure len(top_Str_bay) = n_bays
 #bot_str_bay_count = np.array(list_input(input("Input list of stringer count per bay (bottom):"))) # Number of stringers in each bay, make sure len(bot_str_bay) = n_bays
 
-top_str_bay_count = np.array([12, 10, 10, 8, 6, 4, 3])
-bot_str_bay_count = np.array([10, 8, 8, 6, 4, 3, 3])
+top_str_bay_count = np.array([12,10,10,8,6,4,3])
+bot_str_bay_count = np.array([10,8,8,6,4,3,3])
 
 top_width_bay_str = np.zeros((1000, n_bays)) # Distances between top stringers in each bay, note each column is one bay
 bot_width_bay_str = np.zeros((1000, n_bays)) # Same as line above but for bottom stringers
@@ -82,8 +84,8 @@ print(f"Max a/b ratio of bot plate per bay: {(max_plate_ratio_bot)}")
 # kc_top_bay = np.array(list_input(input("Input list of kc values (top):"))) # Input kc values for each bay, make sure len(kc_top_bay) = n_bays. Space separate the numbers
 # kc_bot_bay = np.array(list_input(input("Input list of kc values (bot):"))) # Same as line above but for bottom bay
 
-kc_top_bay = np.array([4, 4, 4, 4, 4, 4, 4])
-kc_bot_bay = np.array([4, 4, 4, 4, 4, 4, 4])
+kc_top_bay = np.array([4] * len(rib_loc))
+kc_bot_bay = np.array([4] * len(rib_loc))
 
 # Determination of ks ratios for website
 
@@ -98,11 +100,12 @@ print(f"Max a/b ratio of web per bay: {(max_plate_ratio_web)}")
 
 # ks_per_bay = np.array(list_input(input("Input list of ks values:"))) # Input ks values for each bay, make sure len(kc_top_bay) = n_bays
 
-ks_per_bay = np.array([5, 5, 5, 5, 5, 5, 5])
+ks_per_bay = np.array([5] * len(rib_loc))
 
 # k_str = int(input("Set the stringer buckling coefficient:")) # Stringer buckling coefficient
 
 k_str = 1
+
 
 # -------------------------------------------- Checking design for failure -------------------------------------------------------
 
@@ -178,7 +181,7 @@ for i in range(n_bays):
         print(f"BAY {i+1}, Bottom Skin thickness (Tension) {Cl.Fore.RED} INSUFFICIENT {Cl.Style.RESET_ALL}: \u274c")
 
 class Weight:
-    def __init__(self, t_ribs):
+    def __init__(self, t_ribs = 0.002):
         self.density = 2700
         self.rib_loc = rib_loc
         self.string_area = str_area
@@ -191,14 +194,16 @@ class Weight:
         self.width = 1  # constant
         self.top_str_bay_count = top_str_bay_count
         self.bottom_str_bay_count = bot_str_bay_count
+        self.bay_lengths = bay_lengths
         
     def weight_calc(self):
         rib_contr = self.n_ribs * self.t_ribs * self.area_ribs * self.density
         skin_contr = self.span * self.density * self.width * (self.t_skin_top + self.t_skin_bottom)
-        stringer_contr_top = self.string_area * self.top_str_bay_count * self.density * self.rib_loc[1:]
-        stringer_contr_bot = self.string_area * self.bottom_str_bay_count * self.density * self.rib_loc[1:]
+        stringer_contr_top = self.string_area * self.top_str_bay_count * self.density * self.bay_lengths
+        stringer_contr_bot = self.string_area * self.bottom_str_bay_count * self.density * self.bay_lengths
         return np.sum(rib_contr) + np.sum(skin_contr) + np.sum(stringer_contr_top) + np.sum(stringer_contr_bot)
 
+print(Weight().weight_calc())
         
         
     # Margin of Safety plot, not including crack propagation    
