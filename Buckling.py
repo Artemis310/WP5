@@ -14,7 +14,7 @@ import TwistDistribution_requires_editing as Tw
 
 
 
-sns.set()
+#sns.set()
 #Material Constants
 tens_yield_strength = 276e6
 ult_yield_strength = 310e6
