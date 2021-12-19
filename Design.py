@@ -14,21 +14,17 @@ len_wbox = 51.73/2
 
 # Set component properties
 
-str_height = 0.18 # Stringer height [m]
-str_width = 0.18  # Stringer width [m]
-str_thick = 0.015 # Stringer thickness [m]
+str_height = 0.1 # Stringer height [m]
+str_width = 0.1  # Stringer width [m]
+str_thick = 0.007 # Stringer thickness [m]
 str_area = (str_height + str_width) * str_thick # Stringer area [m^2]
 
 
-skin_thick_top = 0.01 # Top skin thickness [m]
-skin_thick_bot = 0.01 # Bottom skin thickness [m]
+skin_thick_top = 0.028 # Top skin thickness [m]
+skin_thick_bot = 0.021 # Bottom skin thickness [m]
 
 flg_th = (skin_thick_top + skin_thick_bot) / 2 # Flange thickness [m]
-<<<<<<< HEAD
-spr_th = 0.012 # Spar thickness [m]
-=======
 spr_th = 0.017 # Spar thickness [m]
->>>>>>> 136b20c403353f2beb73d7de6ea2b0cd977c3d2e
 
 centroid_x, centroid_y = str_width / 2, str_height / 2 # Cross section centroids [m]
 
@@ -43,26 +39,17 @@ def list_input(inputted_list):
 
 #rib_loc = np.array(list_input(input("Input list of rib locations (make sure to include 0 and 25.865):"))) # Set locations of the ribs. Space separate list
 
-<<<<<<< HEAD
-rib_loc = np.array([0, 3, 6, 9.05, 13, 15, 20, 25.865])
-=======
-rib_loc = np.array([0, 3,6,9.05,13,15,20,25.865])
+rib_loc = np.array([0, 4, 9.05, 13, 18, 25.865])
 bay_lengths = np.diff(rib_loc)
 
->>>>>>> 136b20c403353f2beb73d7de6ea2b0cd977c3d2e
 
 n_bays = len(rib_loc) - 1 # Number of bays
 
 #top_str_bay_count = np.array(list_input(input("Input list of stringer count per bay (top):"))) # Number of stringers in each bay, make sure len(top_Str_bay) = n_bays
 #bot_str_bay_count = np.array(list_input(input("Input list of stringer count per bay (bottom):"))) # Number of stringers in each bay, make sure len(bot_str_bay) = n_bays
 
-<<<<<<< HEAD
-top_str_bay_count = np.array([12, 10, 10, 8, 6, 4, 3])
-bot_str_bay_count = np.array([10, 8, 8, 6, 4, 3, 3]) 
-=======
-top_str_bay_count = np.array([12,10,10,8,6,4,3])
-bot_str_bay_count = np.array([10,8,8,6,4,3,3])
->>>>>>> 136b20c403353f2beb73d7de6ea2b0cd977c3d2e
+top_str_bay_count = np.array([25, 16, 10, 8, 4])
+bot_str_bay_count = np.array([16, 10, 8, 6, 3]) 
 
 top_width_bay_str = np.zeros((1000, n_bays)) # Distances between top stringers in each bay, note each column is one bay
 bot_width_bay_str = np.zeros((1000, n_bays)) # Same as line above but for bottom stringers
@@ -216,7 +203,7 @@ class Weight:
         stringer_contr_bot = self.string_area * self.bottom_str_bay_count * self.density * self.bay_lengths
         return np.sum(rib_contr) + np.sum(skin_contr) + np.sum(stringer_contr_top) + np.sum(stringer_contr_bot)
 
-print(Weight().weight_calc())
+# print(Weight().weight_calc())
         
         
     # Margin of Safety plot, not including crack propagation    
@@ -239,7 +226,10 @@ mos_str_values = np.zeros((1000, n_bays))
 
 mos_web_values = np.zeros((1000, n_bays))
 
-<<<<<<< HEAD
+mos_tens_values = np.zeros((1000, n_bays))
+
+mos_crackprop_values = np.zeros((1000, n_bays))
+
 mos_loc = np.zeros((1000, n_bays))
 
 for i in range(n_bays):
@@ -248,6 +238,8 @@ for i in range(n_bays):
     norm_stress = Bk.NormalStressCalcs("Combined", top_str_bay_count[i], bot_str_bay_count[i], str_width, str_area,
                                         centroid_x, centroid_y, spr_th, flg_th, str_height,
                                         str_height, POI[0], POI[-2]).stress_along_span(rib_loc[i], rib_loc[i+1])[:, 1]
+    tens_stress = Bk.Tension_analysis(top_str_bay_count[i], bot_str_bay_count[i], str_width, str_area, centroid_x, centroid_y, 
+                                      spr_th, flg_th, str_height, str_thick, 1000, 310e6, rib_loc[i], rib_loc[i+1]).stress_along_span()[-1]
 
     shear_stress = Bk.BuckleWeb(spr_th, rib_loc[i], rib_loc[i+1]).total_shear(ks_per_bay[i])[0]
     
@@ -260,10 +252,16 @@ for i in range(n_bays):
     mos_skin_temp = skin_buckle / norm_stress
     mos_str_temp = str_buckle / norm_stress
     mos_web_temp = web_buckle / shear_stress
+    mos_tens_temp = (310e6)/tens_stress
+    mos_crackprop_temp = Cp.CrackProp(top_str_bay_count[i], bot_str_bay_count[i], str_width, str_area, 
+                                      centroid_x, centroid_y, spr_th, flg_th, str_height, str_thick).allowed_stress(0.005/2,29e6) / tens_stress
+    
     
     mos_skin_values[:, i] = mos_skin_temp
     mos_str_values[:, i] = mos_str_temp
     mos_web_values[:, i] = mos_web_temp
+    mos_tens_values[:, i] = mos_tens_temp
+    mos_crackprop_values[:, i] = mos_crackprop_temp
     
     mos_loc[:, i] = np.linspace(rib_loc[i], rib_loc[i+1], 1000)
     
@@ -276,7 +274,7 @@ ax = plt.gca()
 # plt.ylabel("Margin of Safety (Skin Failure) [-]")
 # plt.xlabel("Distance along wing span [m]")
 # plt.grid(True)
-# ax.set_ylim([0, 100])
+# ax.set_ylim([0, 1000])
 # plt.show()
 
 # for i in range(n_bays):
@@ -286,7 +284,7 @@ ax = plt.gca()
 # plt.ylabel("Margin of Safety (Stringer Failure) [-]")
 # plt.xlabel("Distance along wing span [m]")
 # plt.grid(True)
-# ax.set_ylim([0, 120])
+# ax.set_ylim([0, 50])
 # plt.show()
 
 # for i in range(n_bays):
@@ -296,17 +294,25 @@ ax = plt.gca()
 # plt.ylabel("Margin of Safety (Web Failure) [-]")
 # plt.xlabel("Distance along wing span [m]")
 # plt.grid(True)
-# ax.set_ylim([0, 90])
+# ax.set_ylim([0, 200])
 # plt.show()
-=======
-            shear_stress = Bk.BuckleWeb(self.spar_thick, rib_loc[i], rib_loc[i+1]).total_shear()[0]
-            
-            skin_buckle = Bk.BuckleSkin(4, self.flange_thick, rib_loc[i+1] - rib_loc[i]).crit_buckle_skin()
-            str_buckle = Bk.BuckleColumn(k_str, Mm.C_stringer(self.str_width, self.str_height, self.str_width, self.str_thick),
-                                         rib_loc[i+1] - rib_loc[i], self.str_area).crit_buckle_stringer()
-            web_buckle = Bk.BuckleWeb(self.spar_thick, rib_loc[i], rib_loc[i+1]).cri_buckle_web(ks_per_bay)
-            
-            
-            
-print(Weight(0.001).weight_calc())
->>>>>>> 136b20c403353f2beb73d7de6ea2b0cd977c3d2e
+
+# for i in range(n_bays):
+#     plt.plot(mos_loc[:, i], mos_tens_values[:, i], linewidth = 0.9, label = f"Bay = {i + 1}")
+    
+# plt.legend(loc="lower right", frameon = True, prop={'size': 9})
+# plt.ylabel("Margin of Safety (Skin Tensile Failure) [-]")
+# plt.xlabel("Distance along wing span [m]")
+# plt.grid(True)
+# ax.set_ylim([0, 100])
+# plt.show()
+
+for i in range(n_bays):
+    plt.plot(mos_loc[:, i], mos_crackprop_values[:, i], linewidth = 0.9, label = f"Bay = {i + 1}")
+    
+plt.legend(loc="upper left", frameon = True, prop={'size': 9})
+plt.ylabel("Margin of Safety (Damage Tolerance) [-]")
+plt.xlabel("Distance along wing span [m]")
+plt.grid(True)
+ax.set_ylim([0, 200])
+plt.show()
