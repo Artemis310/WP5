@@ -18,6 +18,7 @@ aerostandard = ald.AeroLoads(0.333, 247.66, 4.42, 0.001)
 # Lift
 L_fit = np.polyfit(aerostandard.total_dist()[0], aerostandard.total_dist()[1], 4)
 
+
 def lift(z):
     return ((L_fit[0] * z ** 4) + (L_fit[1] * z ** 3) + (L_fit[2] * z ** 2) + (L_fit[3] * z) + (
         L_fit[4]))

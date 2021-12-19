@@ -61,14 +61,15 @@ class AeroLoads:
 
         return Cl_PerSpan_a0, Cl_PerSpan_a10, Cd_PerSpan_a0, Cd_PerSpan_a10, Cm_PerSpan_a0, Cm_PerSpan_a10
 
-    def total_dist(self):
+    def total_dist(self, load_fac = 2.5):
         param_sin = np.sin(self.alpha) / np.sin(np.radians(10))
         y = np.linspace(0, self.end, num=self.num)
         L_d = self.dist(y)[0] + param_sin * (self.dist(y)[1] - self.dist(y)[0])
         D_d = self.dist(y)[2] + param_sin * (self.dist(y)[3] - self.dist(y)[2])
         M_d = self.dist(y)[4] + param_sin * (self.dist(y)[5] - self.dist(y)[4])
 
-        return y, L_d, D_d, M_d, self.num
+
+        return y, load_fac * L_d, load_fac ** 2 * D_d, M_d, self.num
 
     def desired_dist(self, y):
         param_sin = np.sin(self.alpha) / np.sin(np.radians(10))
